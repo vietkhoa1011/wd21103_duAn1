@@ -1,5 +1,5 @@
 <?php
-// Giả sử $books được truyền từ controller hoặc model (không cần dữ liệu mẫu ở đây)
+
 
 // --- Lọc theo danh mục và tìm kiếm ---
 $selected_category = $_GET['category'] ?? '';
