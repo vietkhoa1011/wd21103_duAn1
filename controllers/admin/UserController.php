@@ -8,10 +8,10 @@ require_once __DIR__ . '/../../models/admin/UserModel.php';
         }
         function user() {
             $users = $this->userModel->getAllUsers();
-            require_once PATH_VIEW . './admin/user.php';
+            require_once PATH_VIEW . './admin/user/user.php';
         }
         function create() {
-            require_once PATH_VIEW . './admin/create_user.php';
+            require_once PATH_VIEW . './admin/user/creater.php';
         }
         function store() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,13 +20,13 @@ require_once __DIR__ . '/../../models/admin/UserModel.php';
                 // Thực hiện lưu dữ liệu vào database
                 // Ví dụ: $this->userModel->create($name, $email);
                 // Sau khi lưu xong, chuyển hướng về trang danh sách người dùng
-                header('Location: index.php?action=/user');
+                header('Location: index.php?action=admin/user');
                 exit();
             }
         }
         function edit($id) {
             $user = $this->userModel->findById($id);
-            require_once PATH_VIEW . './admin/edit_user.php';
+            require_once PATH_VIEW . './admin/user/edit_user.php';
         }
         function update($id) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,7 +35,7 @@ require_once __DIR__ . '/../../models/admin/UserModel.php';
                 // Thực hiện cập nhật dữ liệu vào database
                 // Ví dụ: $this->userModel->update($id, ['name' => $name, 'email' => $email]);
                 // Sau khi cập nhật xong, chuyển hướng về trang danh sách người dùng
-                header('Location: index.php?action=/user');
+                header('Location: index.php?action=admin/user');
                 exit();
             }
         }
@@ -43,7 +43,7 @@ require_once __DIR__ . '/../../models/admin/UserModel.php';
             // Thực hiện xóa dữ liệu khỏi database
             // Ví dụ: $this->userModel->delete($id);
             // Sau khi xóa xong, chuyển hướng về trang danh sách người dùng
-            header('Location: index.php?action=/user');
+            header('Location: index.php?action=admin/user');
             exit();
         }
     }

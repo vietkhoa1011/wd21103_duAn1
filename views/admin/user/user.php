@@ -36,7 +36,7 @@
             <tbody>
                 <?php foreach ($users as $user): ?>
                 <tr>
-                    <td><?= $user['id'] ?></td>
+                    <td><?= $user['user_id'] ?></td>
                     <td><?= $user['name'] ?></td>
                     <td><?= $user['email'] ?></td>
                     <td><?= $user['phone'] ?></td>
@@ -49,7 +49,7 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <a href="index.php?action=admin/user/edit&id=<?= $user['id'] ?>" 
+                        <a href="index.php?action=admin/user/update&id=<?= $user['id'] ?>" 
                            class="btn btn-warning btn-sm">Sửa</a>
 
                         <a href="index.php?action=admin/user/delete&id=<?= $user['id'] ?>" 
