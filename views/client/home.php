@@ -1,6 +1,4 @@
 <?php
-// Giả sử $books được truyền từ controller hoặc model (không cần dữ liệu mẫu ở đây)
-
 // --- Lọc theo danh mục và tìm kiếm ---
 $selected_category = $_GET['category'] ?? '';
 $search_keyword = trim($_GET['search'] ?? '');
@@ -120,16 +118,18 @@ $categories = array_unique(array_column($books, 'category'));
 </head>
 <body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-    <div class="container-fluid">
-        <a href="index.php" class="navbar-brand fw-bold text-primary fs-4">
-            <i class="fas fa-book-open me-2"></i>BookStore
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+    <div class="container"> <!-- px-3 để tạo khoảng trống hai bên -->
+        <a href="index.php" class="navbar-brand fw-bold text-white">
+            <i class="fas fa-book-open me-2 text-primary"></i>SmartBooks
         </a>
         <!-- Thanh tìm kiếm -->
         <div class="d-none d-md-flex flex-grow-1 mx-5">
-            <form method="GET" class="w-100">
+            <form method="GET" class="w-100 d-flex align-items-center">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control border-primary" placeholder="Tìm tên sách, tác giả..." value="<?= htmlspecialchars($search_keyword) ?>">
+                    <input type="text" name="search" class="form-control border-primary" 
+                           placeholder="Tìm tên sách, tác giả..." 
+                           value="<?= htmlspecialchars($search_keyword) ?>">
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
@@ -137,6 +137,10 @@ $categories = array_unique(array_column($books, 'category'));
                 <?php if (!empty($selected_category)): ?>
                     <input type="hidden" name="category" value="<?= htmlspecialchars($selected_category) ?>">
                 <?php endif; ?>
+                <!-- Icon người bên cạnh thanh tìm kiếm -->
+                <a href="index.php?action=/user" class="btn btn-outline-light ms-3">
+                    <i class="fas fa-user"></i>
+                </a>
             </form>
         </div>
     </div>

@@ -34,14 +34,14 @@
     <!-- Thanh điều hướng (Header) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#"><i class="fas fa-book-open me-2 text-primary"></i>BookStore</a>
+            <a class="navbar-brand fw-bold" href="index.php?action=/"><i class="fas fa-book-open me-2 text-primary"></i>SmartBooks</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Trang chủ</a>
+                        <a class="nav-link" href="index.php?action=/">Trang chủ</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Sách mới</a>
@@ -70,13 +70,14 @@
         </nav>
 
         <div class="row">
-            
+            <?php foreach ($users as $user) : ?>
             <!-- Cột trái: Thông tin cơ bản và Avatar -->
             <div class="col-lg-4 mb-4">
+                
                 <div class="card mb-4 text-center">
                     <div class="card-body">
                         <img src="https://i.pravatar.cc/300?img=68" alt="Avatar" class="rounded-circle profile-img mb-3">
-                        <h4 class="mb-1">Nguyễn Văn A</h4>
+                        <h4 class="mb-1"><?php echo $user['name']; ?></h4>
                         <p class="text-muted mb-2"><span class="badge bg-warning text-dark"><i class="fas fa-crown me-1"></i>Thành viên Vàng</span></p>
                         <p class="text-muted mb-4"><i class="fas fa-map-marker-alt me-2"></i>Hà Nội, Việt Nam</p>
                         
@@ -89,19 +90,22 @@
 
                 <!-- Thẻ thống kê tài khoản -->
                 <div class="card mb-4">
+
                     <div class="card-body">
                         <h6 class="card-title fw-bold mb-3">Thống kê mua sắm</h6>
-                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                            <span class="text-muted"><i class="fas fa-book text-primary me-2"></i>Sách đã mua</span>
-                            <span class="fw-bold">42 cuốn</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                            <span class="text-muted"><i class="fas fa-star text-warning me-2"></i>Đánh giá</span>
-                            <span class="fw-bold">15 lượt</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted"><i class="fas fa-coins text-success me-2"></i>Điểm tích lũy</span>
-                            <span class="fw-bold">1,250 điểm</span>
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                                <span class="text-muted"><i class="fas fa-book text-primary me-2"></i>Sách đã mua</span>
+                                <span class="fw-bold">42 cuốn</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                                <span class="text-muted"><i class="fas fa-star text-warning me-2"></i>Đánh giá</span>
+                                <span class="fw-bold">15 lượt</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted"><i class="fas fa-coins text-success me-2"></i>Điểm tích lũy</span>
+                                <span class="fw-bold">1,250 điểm</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -133,7 +137,7 @@
                                         <p class="mb-0 fw-bold">Họ và tên</p>
                                     </div>
                                     <div class="col-sm-9">
-                                        <p class="text-muted mb-0">Nguyễn Văn A</p>
+                                        <p class="text-muted mb-0"><?php echo $user['name']; ?></p>
                                     </div>
                                 </div>
                                 <hr>
@@ -142,7 +146,7 @@
                                         <p class="mb-0 fw-bold">Email</p>
                                     </div>
                                     <div class="col-sm-9">
-                                        <p class="text-muted mb-0">nguyenvana@example.com</p>
+                                        <p class="text-muted mb-0"><?php echo $user['email']; ?></p>
                                     </div>
                                 </div>
                                 <hr>
@@ -151,7 +155,7 @@
                                         <p class="mb-0 fw-bold">Điện thoại</p>
                                     </div>
                                     <div class="col-sm-9">
-                                        <p class="text-muted mb-0">(084) 123-456-789</p>
+                                        <p class="text-muted mb-0"><?php echo $user['phone']; ?></p>
                                     </div>
                                 </div>
                                 <hr>
@@ -160,7 +164,7 @@
                                         <p class="mb-0 fw-bold">Địa chỉ</p>
                                     </div>
                                     <div class="col-sm-9">
-                                        <p class="text-muted mb-0">Số 10, Đường Cầu Giấy, Hà Nội, Việt Nam</p>
+                                        <p class="text-muted mb-0"><?php echo $user['address']; ?></p>
                                     </div>
                                 </div>
                                 
@@ -177,22 +181,17 @@
                                                 <th>Trạng thái</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <!-- <tbody>
+                                            <?php foreach ($orders as $order) : ?>
                                             <tr>
-                                                <td><a href="#" class="fw-bold text-decoration-none">#MDH8271</a></td>
-                                                <td>15/03/2026</td>
-                                                <td>Đắc Nhân Tâm, Nhà Giả Kim...</td>
-                                                <td>320.000đ</td>
+                                                <td><a href="#" class="fw-bold text-decoration-none">#<?php echo $order['order_id']; ?></a></td>
+                                                <td><?php echo $order['order_date']; ?></td>
+                                                <td><?php echo $order['product_name']; ?></td>
+                                                <td><?php echo number_format($order['total_amount'], 0, ',', '.'); ?>đ</td>
                                                 <td><span class="badge bg-success">Đã giao</span></td>
                                             </tr>
-                                            <tr>
-                                                <td><a href="#" class="fw-bold text-decoration-none">#MDH8190</a></td>
-                                                <td>02/03/2026</td>
-                                                <td>Sapiens - Lược Sử Loài Người</td>
-                                                <td>185.000đ</td>
-                                                <td><span class="badge bg-success">Đã giao</span></td>
-                                            </tr>
-                                        </tbody>
+                                            <?php endforeach; ?>
+                                        </tbody> -->
                                     </table>
                                 </div>
                             </div>
@@ -243,7 +242,7 @@
                     </div>
                 </div>
             </div>
-            
+            <?php endforeach; ?>
         </div>
     </div>
 
