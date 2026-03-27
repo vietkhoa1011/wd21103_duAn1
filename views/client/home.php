@@ -87,6 +87,30 @@ $categories = array_unique(array_column($books, 'category'));
         .hero-img:hover {
             transform: rotate(0deg) scale(1.05);
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        } 
+        .book-float-btn {
+            position: fixed;
+           
+            right: 58px;
+            width: 60px;
+            height: 60px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+
+        .book-float-btn:hover {
+            background: #084298;
+            transform: scale(1.1);
+            color: white;
         }
 
         /* Animation khi load trang */
@@ -141,6 +165,9 @@ $categories = array_unique(array_column($books, 'category'));
                 <a href="index.php?action=/user" class="btn btn-outline-light ms-3">
                     <i class="fas fa-user"></i>
                 </a>
+              <a href="index.php?action=/book" class="book-float-btn" title="Quản lý sách">
+                <i class="fas fa-book-open"></i>
+            </a>
             </form>
         </div>
     </div>
