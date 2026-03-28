@@ -1,31 +1,26 @@
 <?php
 
-require_once __DIR__ . '/../../configs/env.php';
+require_once __DIR__ . '/../configs/env.php';
 
-class Book
+class Book extends BaseModel
 {
-    public $conn;
-
-    public function __construct()
-    {
-        try {
-            $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-            $this->conn = new PDO($dsn, DB_USERNAME, DB_PASSWORD, DB_OPTIONS);
-        } catch (PDOException $e) {
-            die('Lỗi kết nối database: ' . $e->getMessage());
-        }
-    }
-
+    // Lấy tất cả sách
     public function getAllBooks()
     {
-        $sql = "SELECT * FROM books";
-        $stmt = $this->conn->query($sql);
-        return $stmt->fetchAll();
+        $sql = "SELECT books.*, categories.category_name 
+                FROM books
+                JOIN categories 
+                ON books.category_id = categories.category_id
+                ORDER BY books.book_id ASC";
+                
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // Lấy sách theo ID
     public function getBookById($id)
     {
         $sql = "SELECT * FROM books WHERE book_id = :id";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
         return $stmt->fetch();
     }
@@ -34,7 +29,7 @@ class Book
     {
         $sql = "INSERT INTO books (title, author, description, image, category_id) 
                 VALUES (:title, :author, :description, :image, :category_id)";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':title' => $title,
             ':author' => $author,
@@ -53,7 +48,7 @@ class Book
                     image = :image,
                     category_id = :category_id
                 WHERE book_id = :id";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':id' => $id,
             ':title' => $title,
@@ -67,7 +62,7 @@ class Book
     public function deleteBook($id)
     {
         $sql = "DELETE FROM books WHERE book_id = :id";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':id' => $id]);
     }
 }

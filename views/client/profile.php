@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+<?php
+if (!isset($users)) {
+    $users = [];
+}
+if (!isset($orders)) {
+    $orders = [];
+}
+
+?><!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -70,6 +78,7 @@
         </nav>
 
         <div class="row">   
+            <?php foreach ($users as $user) :?>
             <!-- Cột trái: Thông tin cơ bản và Avatar -->
             <div class="col-lg-4 mb-4">
                 
@@ -180,7 +189,7 @@
                                                 <th>Trạng thái</th>
                                             </tr>
                                         </thead>
-                                        <!-- <tbody>
+                                        <tbody>
                                             <?php foreach ($orders as $order) : ?>
                                             <tr>
                                                 <td><a href="#" class="fw-bold text-decoration-none">#<?php echo $order['order_id']; ?></a></td>
@@ -190,7 +199,7 @@
                                                 <td><span class="badge bg-success">Đã giao</span></td>
                                             </tr>
                                             <?php endforeach; ?>
-                                        </tbody> -->
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -241,6 +250,7 @@
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
         </div>
     </div>
 

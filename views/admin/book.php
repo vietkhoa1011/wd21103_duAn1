@@ -1,6 +1,4 @@
-<?php
-?>
-
+<?php require_once __DIR__ . '/../../views/client/sidebar.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,7 +10,10 @@
         body {
             background-color: #f8f9fa;
         }
-
+        .main-content {
+    margin-left: 240px;
+    padding: 20px;
+}
         .table img {
             width: 80px;
             height: 100px;
@@ -38,7 +39,7 @@
     </style>
 </head>
 <body>
-
+<div class="main-content">
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 fw-bold">Quản lý sách</h1>
@@ -83,7 +84,7 @@
                                     </td>
 
                                     <td>
-                                        <?= htmlspecialchars($book['category_id']) ?>
+                                        <?= htmlspecialchars($book['category_name']) ?>
                                     </td>
 
                                     <td>

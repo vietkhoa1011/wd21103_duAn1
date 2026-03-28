@@ -1,13 +1,24 @@
+<?php
+if (!isset($book)) {
+    $book = [];
+
+}
+require_once __DIR__ . '/../../views/client/sidebar.php';
+?>
 <!DOCTYPE html>
-<html lang="vi">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sửa sách</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+    <style>
+        .main-content {
+    margin-left: 240px;
+    padding: 20px;
+}
+    </style>
+    </head>
 <body>
-<div class="container py-5">
+<div  class="container py-5 main-content">
     <h2 class="mb-4">Sửa sách</h2>
 
     <form action="index.php?action=/book/update&id=<?= $book['book_id'] ?>" method="POST">

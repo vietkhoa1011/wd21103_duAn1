@@ -1,4 +1,8 @@
 <?php
+// --- Load books data ---
+$books = $books ?? []; // Ensure $books is defined, or include the data file here
+// Example: include '../path/to/books_data.php'; or $books = getBooks();
+
 // --- Lọc theo danh mục và tìm kiếm ---
 $selected_category = $_GET['category'] ?? '';
 $search_keyword = trim($_GET['search'] ?? '');
@@ -162,17 +166,17 @@ $categories = array_unique(array_column($books, 'category'));
                     <input type="hidden" name="category" value="<?= htmlspecialchars($selected_category) ?>">
                 <?php endif; ?>
                 <!-- Icon người bên cạnh thanh tìm kiếm -->
-                <a href="index.php?action=/user" class="btn btn-outline-light ms-3">
+                <a href="index.php?action=/profile" class="btn btn-outline-light ms-3">
                     <i class="fas fa-user"></i>
                 </a>
-              <a href="index.php?action=/book" class="book-float-btn" title="Quản lý sách">
+              <a href="index.php?action=/book" class="btn btn-outline-light ms-3" title="Quản lý sách">
                 <i class="fas fa-book-open"></i>
             </a>
             </form>
         </div>
     </div>
 </nav>
-
+<!-- // --- Phần hero --- -->
 <header class="bg-primary text-white py-5">
     <div class="container">
         <div class="row align-items-center">
@@ -192,6 +196,10 @@ $categories = array_unique(array_column($books, 'category'));
     </div>
 </header>
 
+
+
+
+<!-- // --- Lọc theo danh mục và tìm kiếm --- -->
 <main class="container py-5" id="books">
     <div class="row">
         <aside class="col-lg-3 mb-4">

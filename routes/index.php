@@ -7,63 +7,30 @@ require_once __DIR__ . '/../controllers/admin/BookController.php';
 
 $action = $_GET['action'] ?? '/';
 
-switch ($action) {
-    case '/':
-        (new HomeController)->home();
-        break;
+match ($action) {
+    // Client
+    '/'         => (new HomeController)->home(),
+    '/profile'  => (new UserController)->profile(),
 
     // Admin user
-    case '/user':
-        (new UserController)->user();
-        break;
-
-    case '/user/create':
-        (new UserController)->create();
-        break;
-
-    case '/user/update':
-        (new UserController)->update($_GET['id'] ?? null);
-        break;
-
-    case '/user/delete':
-        (new UserController)->destroy($_GET['id'] ?? null);
-        break;
+    '/user'         => (new UserController)->user(),
+    '/user/create'  => (new UserController)->create(),
+    '/user/update'  => (new UserController)->update($_GET['id'] ?? null),
+    '/user/delete'  => (new UserController)->destroy($_GET['id'] ?? null),
 
     // Admin auth
-    case '/login':
-        (new AuthController)->login();
-        break;
+    '/login' => (new AuthController)->login(),
 
     // Client register
-    case '/register':
-        (new ClientAuthController)->register();
-        break;
+    '/register' => (new ClientAuthController)->register(),
 
     // Book
-    case '/book':
-        (new BookController)->viewBook();
-        break;
+    '/book'         => (new BookController)->viewBook(),
+    '/book/create'  => (new BookController)->create(),
+    '/book/store'   => (new BookController)->store(),
+    '/book/edit'    => (new BookController)->edit($_GET['id'] ?? null),
+    '/book/update'  => (new BookController)->update($_GET['id'] ?? null),
+    '/book/delete'  => (new BookController)->delete($_GET['id'] ?? null),
 
-    case '/book/create':
-        (new BookController)->create();
-        break;
-
-    case '/book/store':
-        (new BookController)->store();
-        break;
-
-    case '/book/edit':
-        (new BookController)->edit($_GET['id'] ?? null);
-        break;
-
-    case '/book/update':
-        (new BookController)->update($_GET['id'] ?? null);
-        break;
-
-    case '/book/delete':
-        (new BookController)->delete($_GET['id'] ?? null);
-        break;
-
-    default:
-        die('404 - Không tìm thấy trang');
-}
+    default => die('404 - Không tìm thấy trang')
+};

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/client/HomeModel.php';
+require_once __DIR__ . '/../../models/HomeModel.php';
 class HomeController
 {   
     public $homeModel;
@@ -16,6 +16,7 @@ class HomeController
         // Truyền dữ liệu sách vào view
         require_once PATH_VIEW . './client/home.php';
     }
+    
 
 
 }

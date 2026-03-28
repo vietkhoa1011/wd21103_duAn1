@@ -1,16 +1,27 @@
+<?php
+if (!isset($users)) {
+    $users = [];
+}
+require_once __DIR__ . '../../../../views/client/sidebar.php';
+?>
 <!DOCTYPE html>
-
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý User</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
-<div class="container py-4">
+<div class="container py-4 main-content">
 
-```
+
 <h2 class="mb-4">Quản lý người dùng</h2>
 
 <!-- Nút thêm -->
@@ -64,7 +75,7 @@
         </table>
     </div>
 </div>
-```
+
 
 </div>
 
