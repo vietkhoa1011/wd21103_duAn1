@@ -1,5 +1,9 @@
 <?php require_once __DIR__ . '/../../views/client/sidebar.php'; ?>
-
+<?php
+if (!isset($categories)) {
+    $categories = [];
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -41,7 +45,17 @@
 
         <div class="mb-3">
             <label class="form-label">Category ID</label>
-            <input type="number" name="category_id" class="form-control">
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select name="category_id" class="form-control">
+                    <option value="">-- Chọn danh mục --</option>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?= $cat['category_id'] ?>">
+                            <?= $cat['category_name'] ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Thêm sách</button>

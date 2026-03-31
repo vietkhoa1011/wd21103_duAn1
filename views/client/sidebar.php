@@ -43,6 +43,10 @@
         <a href="index.php?action=/user">👤 Quản lý user</a>
         <a href="index.php?action=/category">📂 Danh mục</a>
         <a href="index.php?action=/logout">🚪 Đăng xuất</a>
+        <div class="mt-3">
+        <a href="index.php?action=/" class="btn btn-secondary">Quay lại trang chủ</a>
     </div>
+    </div>
+    
 </body>
 </html>

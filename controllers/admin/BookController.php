@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../models/Book.php';
 require_once __DIR__ . '/../../models/BookVariant.php';
+require_once __DIR__ . '/../../models/CategoryModel.php';
 
 class BookController
 {
@@ -20,7 +21,9 @@ class BookController
     }
 
     public function create(): void
-    {
+    {   
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getAllCategories();
         include __DIR__ . '/../../views/admin/book_create.php';
     }
 
@@ -41,6 +44,16 @@ class BookController
         if ($title === '' || $author === '') {
             die('Thiếu dữ liệu');
         }
+        if ($title === '') {
+            $errors['title'] = "Tên sách không được để trống";
+        }
+        if (strlen($title) < 3) {
+            $errors['title'] = "Tên sách phải >= 3 ký tự";
+        }
+        if ($author === '') {
+            $errors['author'] = "Tác giả không được để trống";
+        }
+
 
         $this->bookModel->insertBook($title, $author, $description, $image, $category_id);
 

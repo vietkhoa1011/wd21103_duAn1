@@ -1,0 +1,18 @@
+1. CLIENT (Người dùng)
+Chức năng:
+Đăng ký / đăng nhập
+Xem danh sách sách
+Lọc theo category
+Xem chi tiết sách
+Thêm vào giỏ hàng
+Cập nhật giỏ hàng
+Đặt hàng
+Xem lịch sử đơn hàng
+2. ADMIN
+Chức năng:
+Quản lý category (CRUD)
+Quản lý book (CRUD)
+Quản lý biến thể (book_variants)
+Quản lý đơn hàng
+Quản lý user
+Quản lý review
