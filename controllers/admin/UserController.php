@@ -29,33 +29,38 @@ require_once __DIR__ . '/../../models/UserModel.php';
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name = $_POST['name'] ?? '';
                 $email = $_POST['email'] ?? '';
-                // Thực hiện lưu dữ liệu vào database
-                // Ví dụ: $this->userModel->create($name, $email);
-                // Sau khi lưu xong, chuyển hướng về trang danh sách người dùng
-                header('Location: index.php?action=admin/user');
+                $phone = $_POST['phone'] ?? '';
+                $address = $_POST['address'] ?? '';
+                $password = $_POST['password'] ?? '';
+                if (!empty($name) && !empty($email)) {
+                    $this->userModel->create($name, $email, $phone, $address, $password);
+                }
+                header('Location: index.php?action=/user');
                 exit();
             }
         }
         function edit($id) {
             $user = $this->userModel->findById($id);
-            require_once PATH_VIEW . './admin/user/edit_user.php';
+            require_once PATH_VIEW . './admin/user/update.php';
         }
         function update($id) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name = $_POST['name'] ?? '';
                 $email = $_POST['email'] ?? '';
-                // Thực hiện cập nhật dữ liệu vào database
-                // Ví dụ: $this->userModel->update($id, ['name' => $name, 'email' => $email]);
-                // Sau khi cập nhật xong, chuyển hướng về trang danh sách người dùng
-                header('Location: index.php?action=admin/user');
+                $phone = $_POST['phone'] ?? '';
+                $address = $_POST['address'] ?? '';
+                if (!empty($name) && !empty($email)) {
+                    $this->userModel->update($id, ['name' => $name, 'email' => $email, 'phone' => $phone, 'address' => $address]);
+                }
+                header('Location: index.php?action=/user');
                 exit();
             }
         }
         function destroy($id) {
-            // Thực hiện xóa dữ liệu khỏi database
-            // Ví dụ: $this->userModel->delete($id);
-            // Sau khi xóa xong, chuyển hướng về trang danh sách người dùng
-            header('Location: index.php?action=admin/user');
+            if (!empty($id)) {
+                $this->userModel->delete($id);
+            }
+            header('Location: index.php?action=/user');
             exit();
         }
         

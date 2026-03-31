@@ -25,7 +25,7 @@ require_once __DIR__ . '../../../../views/client/sidebar.php';
 <h2 class="mb-4">Quản lý người dùng</h2>
 
 <!-- Nút thêm -->
-<a href="index.php?action=admin/user/create" class="btn btn-primary mb-3">
+<a href="index.php?action=/user/create" class="btn btn-primary mb-3">
     + Thêm user
 </a>
 
@@ -60,10 +60,10 @@ require_once __DIR__ . '../../../../views/client/sidebar.php';
                         <?php endif; ?>
                     </td>
                     <td>
-                        <a href="index.php?action=admin/user/update&id=<?= $user['id'] ?>" 
+                        <a href="index.php?action=/user/edit&id=<?= $user['user_id'] ?>" 
                            class="btn btn-warning btn-sm">Sửa</a>
 
-                        <a href="index.php?action=admin/user/delete&id=<?= $user['id'] ?>" 
+                        <a href="index.php?action=/user/delete&id=<?= $user['user_id'] ?>" 
                            class="btn btn-danger btn-sm"
                            onclick="return confirm('Xoá user này?')">
                            Xoá
