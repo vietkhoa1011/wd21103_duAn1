@@ -86,9 +86,11 @@
                                     <td>
                                         <?= htmlspecialchars($book['category_name']) ?>
                                     </td>
+                                    
+
 
                                     <td>
-                                        <a href="index.php?action=/book/edit&id=<?= $book['book_id'] ?>" class="btn btn-warning btn-sm">Sửa</a>
+                                        <a href="index.php?action=/book/edit&id=<?= $book['book_id'] ?>" class="btn btn-warning btn-sm">Chi tiết</a>
                                         <a href="index.php?action=/book/delete&id=<?= $book['book_id'] ?>"
                                            class="btn btn-danger btn-sm"
                                            onclick="return confirm('Bạn có chắc muốn xóa sách này không?')">

@@ -1,14 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../models/Book.php';
+require_once __DIR__ . '/../../models/BookVariant.php';
 
 class BookController
 {
     private Book $bookModel;
-
+    private BookVariant $variantModel;
     public function __construct()
     {
         $this->bookModel = new Book();
+        $this->variantModel = new BookVariant();
     }
 
     public function viewBook(): void
@@ -53,6 +55,10 @@ class BookController
         if (!$book) {
             die('Không tìm thấy sách');
         }
+        $book = $this->bookModel->getBookById($id);
+        $variants = $this->variantModel->getByBookId($id);
+        $formats = $this->variantModel->getFormats();
+        $languages = $this->variantModel->getLanguages();
 
         include __DIR__ . '/../../views/admin/book_edit.php';
     }

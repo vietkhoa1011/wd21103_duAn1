@@ -3,6 +3,18 @@ if (!isset($book)) {
     $book = [];
 
 }
+if (!isset($variants)) {
+    $variants = [];
+
+}
+if (!isset($formats)) {
+    $formats = [];
+
+}
+if (!isset($languages)) {
+    $languages = [];
+
+}
 require_once __DIR__ . '/../../views/client/sidebar.php';
 ?>
 <!DOCTYPE html>
@@ -19,7 +31,7 @@ require_once __DIR__ . '/../../views/client/sidebar.php';
     </head>
 <body>
 <div  class="container py-5 main-content">
-    <h2 class="mb-4">Sửa sách</h2>
+    <h2 class="mb-4">Chi tiết sách</h2>
 
     <form action="index.php?action=/book/update&id=<?= $book['book_id'] ?>" method="POST">
         <div class="mb-3">
@@ -47,6 +59,53 @@ require_once __DIR__ . '/../../views/client/sidebar.php';
             <input type="number" name="category_id" class="form-control" value="<?= htmlspecialchars($book['category_id']) ?>">
         </div>
 
+        
+        
+        
+        <h4 class="mt-4">Biến thể</h4>
+        <?php foreach ($variants as $index => $v): ?>
+            <div class="border p-3 mb-3 rounded">
+
+                <!-- ID variant -->
+                <input type="hidden" name="variants[<?= $index ?>][variant_id]" value="<?= $v['variant_id'] ?>">
+
+                <!-- FORMAT -->
+                <div class="mb-2">
+                    <label>Format</label>
+                    <select name="variants[<?= $index ?>][format_id]" class="form-control">
+                        <?php foreach ($formats as $f): ?>
+                            <option value="<?= $f['format_id'] ?>"
+                                <?= $f['format_id'] == $v['format_id'] ? 'selected' : '' ?>>
+                                <?= $f['format_name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- LANGUAGE -->
+                <div class="mb-2">
+                    <label>Language</label>
+                    <select name="variants[<?= $index ?>][language_id]" class="form-control">
+                        <?php foreach ($languages as $l): ?>
+                            <option value="<?= $l['language_id'] ?>"
+                                <?= $l['language_id'] == $v['language_id'] ? 'selected' : '' ?>>
+                                <?= $l['language_name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- PRICE -->
+                <div class="mb-2">
+                    <label>Giá</label>
+                    <input type="number" 
+                        name="variants[<?= $index ?>][price]" 
+                        class="form-control"
+                        value="<?= $v['price'] ?>">
+                </div>
+
+            </div>
+        <?php endforeach; ?>
         <button type="submit" class="btn btn-warning">Cập nhật</button>
         <a href="index.php?action=/book" class="btn btn-secondary">Quay lại</a>
     </form>
