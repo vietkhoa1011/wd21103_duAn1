@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../../views/client/sidebar.php'; ?>
+<?php require_once __DIR__ . '/../../../views/client/sidebar.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>

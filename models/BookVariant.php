@@ -26,5 +26,18 @@
         {
             return $this->pdo->query("SELECT * FROM languages")->fetchAll();
         }
+
+        public function insertVariant($book_id, $format_id, $language_id, $price)
+        {
+            $sql = "INSERT INTO book_variants (book_id, format_id, language_id, price) 
+                    VALUES (:book_id, :format_id, :language_id, :price)";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':book_id' => $book_id,
+                ':format_id' => $format_id,
+                ':language_id' => $language_id,
+                ':price' => $price
+            ]);
+        }
     }
 ?>

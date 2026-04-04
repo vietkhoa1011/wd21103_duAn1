@@ -39,7 +39,7 @@ unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old']);
                         </div>
                     <?php endif; ?>
 
-                    <form action="index.php?action=/handle-register" method="POST">
+                    <form action="index.php?action=/register/handle" method="POST">
                         <div class="mb-3">
                             <label class="form-label">Họ tên</label>
                             <input 

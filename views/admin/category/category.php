@@ -13,7 +13,7 @@ if (!isset($categories)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {  background-color: #f8f9fa; }
+        body { background-color: #f8f9fa; }
         .sidebar { min-height: 100vh; background: #343a40; color: white; }
         .main-content { padding: 20px; }
         .card { border: none; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }

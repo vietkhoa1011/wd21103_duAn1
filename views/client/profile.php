@@ -1,6 +1,6 @@
 <?php
-if (!isset($users)) {
-    $users = [];
+if (!isset($user)) {
+    $user = [];
 }
 if (!isset($orders)) {
     $orders = [];
@@ -78,7 +78,6 @@ if (!isset($orders)) {
         </nav>
 
         <div class="row">   
-            <?php foreach ($users as $user) :?>
             <!-- Cột trái: Thông tin cơ bản và Avatar -->
             <div class="col-lg-4 mb-4">
                 
@@ -250,7 +249,6 @@ if (!isset($orders)) {
                     </div>
                 </div>
             </div>
-            <?php endforeach; ?>
         </div>
     </div>
 

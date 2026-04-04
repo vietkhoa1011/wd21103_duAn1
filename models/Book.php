@@ -30,13 +30,14 @@ class Book extends BaseModel
         $sql = "INSERT INTO books (title, author, description, image, category_id) 
                 VALUES (:title, :author, :description, :image, :category_id)";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             ':title' => $title,
             ':author' => $author,
             ':description' => $description,
             ':image' => $image,
             ':category_id' => $category_id
         ]);
+        return $this->pdo->lastInsertId();
     }
 
     public function updateBook($id, $title, $author, $description, $image, $category_id)

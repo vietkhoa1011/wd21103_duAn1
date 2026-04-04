@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../controllers/client/HomeController.php';
 require_once __DIR__ . '/../controllers/admin/UserController.php';
 require_once __DIR__ . '/../controllers/admin/AuthController.php';
-require_once __DIR__ . '/../controllers/client/ClientAuthController.php';
+// client auth controller removed - using single AuthController for login/register
 require_once __DIR__ . '/../controllers/admin/BookController.php';
 require_once __DIR__ . '/../controllers/admin/CategoryController.php';
 $action = $_GET['action'] ?? '/';
@@ -22,13 +22,16 @@ match ($action) {
 
     // Admin auth
     '/login' => (new AuthController)->login(),
+    '/login/handle' => (new AuthController)->handleLogin(),
+    '/logout' => (new AuthController)->logout(),
 
-    // Client register
-    '/register' => (new ClientAuthController)->register(),
+    // Register (single unified)
+    '/register' => (new AuthController)->register(),
+    '/register/handle' => (new AuthController)->handleRegister(),
 
     // Book
     '/book'         => (new BookController)->viewBook(),
-    '/book/create'  => (new BookController)->create(),
+    '/book/create'  => (new BookController)->create(),  
     '/book/store'   => (new BookController)->store(),
     '/book/edit'    => (new BookController)->edit($_GET['id'] ?? null),
     '/book/update'  => (new BookController)->update($_GET['id'] ?? null),

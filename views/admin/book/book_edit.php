@@ -15,7 +15,7 @@ if (!isset($languages)) {
     $languages = [];
 
 }
-require_once __DIR__ . '/../../views/client/sidebar.php';
+require_once __DIR__ . '/../../../views/client/sidebar.php';
 ?>
 <!DOCTYPE html>
     <meta charset="UTF-8">
@@ -33,7 +33,7 @@ require_once __DIR__ . '/../../views/client/sidebar.php';
 <div  class="container py-5 main-content">
     <h2 class="mb-4">Chi tiết sách</h2>
 
-    <form action="index.php?action=/book/update&id=<?= $book['book_id'] ?>" method="POST">
+    <form action="index.php?action=/book/update&id=<?= $book['book_id'] ?>" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label class="form-label">Tên sách</label>
             <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($book['title']) ?>">
@@ -50,8 +50,22 @@ require_once __DIR__ . '/../../views/client/sidebar.php';
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Ảnh (link ảnh)</label>
-            <input type="text" name="image" class="form-control" value="<?= htmlspecialchars($book['image']) ?>">
+            <label class="form-label">Ảnh</label>
+            <?php $isUrl = strpos($book['image'], 'http') === 0; ?>
+            <div class="mb-2">
+                <input type="radio" name="image_type" value="url" id="image_url_radio" <?= $isUrl ? 'checked' : '' ?>>
+                <label for="image_url_radio">Nhập URL ảnh</label>
+            </div>
+            <input type="text" name="image_url" class="form-control" value="<?= $isUrl ? htmlspecialchars($book['image']) : '' ?>" placeholder="Nhập URL ảnh">
+
+            <div class="mb-2 mt-3">
+                <input type="radio" name="image_type" value="upload" id="image_upload_radio" <?= !$isUrl ? 'checked' : '' ?>>
+                <label for="image_upload_radio">Upload ảnh</label>
+            </div>
+            <input type="file" name="image_file" class="form-control" accept="image/*" style="display: none;" id="image_file_input">
+            <?php if (!$isUrl && !empty($book['image'])): ?>
+                <small class="text-muted">Ảnh hiện tại: <?= htmlspecialchars($book['image']) ?></small>
+            <?php endif; ?>
         </div>
 
         <div class="mb-3">
@@ -110,5 +124,31 @@ require_once __DIR__ . '/../../views/client/sidebar.php';
         <a href="index.php?action=/book" class="btn btn-secondary">Quay lại</a>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlRadio = document.getElementById('image_url_radio');
+    const uploadRadio = document.getElementById('image_upload_radio');
+    const urlInput = document.querySelector('input[name="image_url"]');
+    const fileInput = document.getElementById('image_file_input');
+
+    function toggleImageInput() {
+        if (urlRadio.checked) {
+            urlInput.style.display = 'block';
+            fileInput.style.display = 'none';
+        } else {
+            urlInput.style.display = 'none';
+            fileInput.style.display = 'block';
+        }
+    }
+
+    urlRadio.addEventListener('change', toggleImageInput);
+    uploadRadio.addEventListener('change', toggleImageInput);
+
+    // Initial state
+    toggleImageInput();
+});
+</script>
+
 </body>
 </html>

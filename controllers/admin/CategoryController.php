@@ -1,11 +1,15 @@
 <?php
 require_once __DIR__ . '/../../models/CategoryModel.php';
+require_once __DIR__ . '/../../models/AuthModel.php';
     class CategoryController
     {
         public $categoryModel;
+        public $authModel;
         public function __construct()
         {
             $this->categoryModel = new CategoryModel();
+            $this->authModel = new AuthModel();
+            $this->authModel->checkAdmin();
         }
         public function viewCategory()
         {
