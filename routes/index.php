@@ -5,6 +5,7 @@ require_once __DIR__ . '/../controllers/admin/AuthController.php';
 // client auth controller removed - using single AuthController for login/register
 require_once __DIR__ . '/../controllers/admin/BookController.php';
 require_once __DIR__ . '/../controllers/admin/CategoryController.php';
+require_once __DIR__ . '/../controllers/admin/OrderController.php';
 $action = $_GET['action'] ?? '/';
 
 match ($action) {
@@ -19,7 +20,6 @@ match ($action) {
     '/user/edit'    => (new UserController)->edit($_GET['id'] ?? null),
     '/user/update'  => (new UserController)->update($_GET['id'] ?? null),
     '/user/delete'  => (new UserController)->destroy($_GET['id'] ?? null),
-
     // Admin auth
     '/login' => (new AuthController)->login(),
     '/login/handle' => (new AuthController)->handleLogin(),
@@ -44,6 +44,10 @@ match ($action) {
         '/category/edit'    => (new CategoryController)->edit($_GET['id'] ?? null),
         '/category/update'  => (new CategoryController)->update($_GET['id'] ?? null),
         '/category/delete'  => (new CategoryController)->delete($_GET['id'] ?? null),
+    // Order
+        '/order'            => (new OrderController)->viewOrders(),
+        '/order/detail'     => (new OrderController)->viewOrderDetail(),
+        '/order/update'     => (new OrderController)->updateOrder(),
 
     default => die('404 - Không tìm thấy trang')
 };

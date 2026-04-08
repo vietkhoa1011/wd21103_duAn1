@@ -55,7 +55,7 @@ if (!isset($orders)) {
                         <a class="nav-link" href="#">Sách mới</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Khuyến mãi</a>
+                        <a class="nav-link" href="index.php?action=/logout">Đăng xuất</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Tài khoản</a>
