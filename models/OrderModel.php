@@ -40,7 +40,28 @@
 
     public function getOrderDetails($order_id)
     {
-        $sql = "SELECT * FROM order_detail WHERE order_id = :id";
+        $sql = "
+            SELECT 
+                od.order_detail_id,
+                od.order_id,
+                od.quantity,
+                od.price,
+
+                b.title AS book_name,
+                b.image,
+
+                f.format_name,
+                l.language_name
+
+            FROM order_detail od
+
+            JOIN book_variants bv ON od.variant_id = bv.variant_id
+            JOIN books b ON bv.book_id = b.book_id
+            JOIN formats f ON bv.format_id = f.format_id
+            JOIN languages l ON bv.language_id = l.language_id
+
+            WHERE od.order_id = :id
+        ";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':id', $order_id);
