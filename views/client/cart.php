@@ -1,6 +1,16 @@
 <?php
 $cartCount = count($cartItems ?? []);
 ?>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$cartCount = 0;
+if (!empty($_SESSION['cart'])) {
+    $cartCount = count($_SESSION['cart']);
+}
+?>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -70,6 +80,14 @@ $cartCount = count($cartItems ?? []);
 
                 <a href="index.php?action=/book" class="btn btn-outline-light ms-3" title="Quản lý sách">
                     <i class="fas fa-book-open"></i>
+                </a>
+                <a href="index.php?action=/cart" class="btn btn-outline-light ms-3 position-relative" title="Giỏ hàng">
+                    <i class="fas fa-shopping-cart"></i>
+                    <?php if ($cartCount > 0): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <?= $cartCount ?>
+                        </span>
+                    <?php endif; ?>
                 </a>
             </form>
         </div>
