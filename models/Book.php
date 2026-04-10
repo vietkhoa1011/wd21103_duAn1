@@ -17,12 +17,15 @@ class Book extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Lấy sách theo ID
-    public function getBookById($id)
+   public function getBookById($id)
     {
-        $sql = "SELECT * FROM books WHERE book_id = :id";
+        $sql = "SELECT b.*, c.category_name
+                FROM books b
+                JOIN categories c ON b.category_id = c.category_id
+                WHERE b.book_id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function insertBook($title, $author, $description, $image, $category_id)

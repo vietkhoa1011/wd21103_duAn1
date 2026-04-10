@@ -6,12 +6,21 @@ require_once __DIR__ . '/../controllers/admin/AuthController.php';
 require_once __DIR__ . '/../controllers/admin/BookController.php';
 require_once __DIR__ . '/../controllers/admin/CategoryController.php';
 require_once __DIR__ . '/../controllers/admin/OrderController.php';
+require_once __DIR__ . '/../controllers/client/BookDetailController.php';
+require_once __DIR__ . '/../controllers/client/CartController.php';
 $action = $_GET['action'] ?? '/';
 
 match ($action) {
     // Client
     '/'         => (new HomeController)->home(),
     '/profile'  => (new UserController)->profile(),
+    //Gio hang
+    '/cart'             => (new CartController)->index(),
+    '/cart/add'         => (new CartController)->add(),
+    '/cart/increase'    => (new CartController)->increase(),
+    '/cart/decrease'    => (new CartController)->decrease(),
+    '/cart/remove'      => (new CartController)->remove(),
+    '/cart/clear'       => (new CartController)->clear(),
 
     // Admin user
     '/user'         => (new UserController)->user(),
@@ -48,6 +57,9 @@ match ($action) {
         '/order'            => (new OrderController)->viewOrders(),
         '/order/detail'     => (new OrderController)->viewOrderDetail(),
         '/order/update'     => (new OrderController)->updateOrder(),
+    // Book detail
+        '/book/detail'  => (new BookDetailController)->detail(),
+
 
     default => die('404 - Không tìm thấy trang')
 };
