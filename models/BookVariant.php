@@ -2,7 +2,7 @@
     class BookVariant extends BaseModel
     {
         // lấy variants theo book
-        public function getByBookId($book_id)
+       public function getByBookId($book_id)
         {
             $sql = "SELECT 
                         v.*,
@@ -17,7 +17,7 @@
             $stmt->execute([':book_id' => $book_id]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-        public function getFormats()
+                public function getFormats()
         {   
             return $this->pdo->query("SELECT * FROM formats")->fetchAll();
         }
@@ -38,6 +38,25 @@
                 ':language_id' => $language_id,
                 ':price' => $price
             ]);
+        }
+        public function getVariantById($variant_id)
+        {
+            $sql = "SELECT 
+                        v.*,
+                        b.title,
+                        b.image,
+                        f.format_name,
+                        l.language_name
+                    FROM book_variants v
+                    JOIN books b ON v.book_id = b.book_id
+                    JOIN formats f ON v.format_id = f.format_id
+                    JOIN languages l ON v.language_id = l.language_id
+                    WHERE v.variant_id = :variant_id
+                    LIMIT 1";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':variant_id' => $variant_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         }
     }
 ?>
