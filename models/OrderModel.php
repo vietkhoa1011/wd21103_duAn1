@@ -79,5 +79,37 @@
 
         return $stmt->execute();
     }
+
+    public function createOrder($user_id, $total_price, $status = 'pending', $payment_status = 'unpaid')
+    {
+        $sql = "INSERT INTO orders (user_id, total_price, status, payment_status, order_date) 
+                VALUES (:user_id, :total_price, :status, :payment_status, NOW())";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':total_price', $total_price);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':payment_status', $payment_status);
+
+        if ($stmt->execute()) {
+            return $this->pdo->lastInsertId();
+        }
+        return false;
+    }
+
+    public function createOrderDetail($order_id, $book_id, $variant_id, $quantity, $price)
+    {
+        $sql = "INSERT INTO order_detail (order_id, book_id, variant_id, quantity, price) 
+                VALUES (:order_id, :book_id, :variant_id, :quantity, :price)";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':order_id', $order_id);
+        $stmt->bindParam(':book_id', $book_id);
+        $stmt->bindParam(':variant_id', $variant_id);
+        $stmt->bindParam(':quantity', $quantity);
+        $stmt->bindParam(':price', $price);
+
+        return $stmt->execute();
+    }
 }
 ?>

@@ -1,15 +1,15 @@
 <?php
-$cartCount = count($cartItems ?? []);
-$total = $total ?? 0;
-?>
-<?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+$total = $total ?? 0;
 $cartCount = 0;
 if (!empty($_SESSION['cart'])) {
     $cartCount = count($_SESSION['cart']);
+    
+}
+if (!isset($cartItems)) {
+    $cartItems = [];
 }
 ?>
 
@@ -18,7 +18,7 @@ if (!empty($_SESSION['cart'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ hàng</title>
+    <title>Thanh toán</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,15 +27,6 @@ if (!empty($_SESSION['cart'])) {
         .card-img-top {
             height: 250px;
             object-fit: cover;
-        }
-
-        .book-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.02);
         }
 
         .hero-img {
@@ -55,6 +46,34 @@ if (!empty($_SESSION['cart'])) {
             0% { transform: translateY(0px) rotate(3deg); }
             50% { transform: translateY(-10px) rotate(3deg); }
             100% { transform: translateY(0px) rotate(3deg); }
+        }
+
+        .checkout-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .order-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .item-row {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-row {
+            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+            padding: 15px 0;
         }
     </style>
 </head>
@@ -99,12 +118,12 @@ if (!empty($_SESSION['cart'])) {
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1 class="display-5 fw-bold mb-3">Giỏ hàng của bạn</h1>
-                <p class="lead mb-0">Xem lại các sản phẩm đã chọn và điều chỉnh số lượng trước khi thanh toán.</p>
+                <h1 class="display-5 fw-bold mb-3">Thanh toán</h1>
+                <p class="lead mb-0">Kiểm tra thông tin và hoàn tất đơn hàng của bạn.</p>
             </div>
             <div class="col-md-6 text-center mt-4 mt-md-0">
-                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600"
-                     alt="Cart Hero"
+                <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?auto=format&fit=crop&q=80&w=600"
+                     alt="Checkout Hero"
                      class="img-fluid rounded shadow hero-img"
                      style="max-height: 320px; object-fit: cover;">
             </div>
@@ -112,93 +131,89 @@ if (!empty($_SESSION['cart'])) {
     </div>
 </header>
 
-<main class="container py-5">
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-                <h2 class="h4 fw-bold text-dark mb-0">Danh sách sản phẩm trong giỏ</h2>
-                <span class="text-muted small">Hiện có <?= $cartCount ?> sản phẩm</span>
-            </div>
-
-            <?php if (empty($cartItems)): ?>
-                <div class="alert alert-warning">Giỏ hàng đang trống.</div>
-                <a href="index.php" class="btn btn-primary">Tiếp tục mua sắm</a>
-            <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle bg-white">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Ảnh</th>
-                                <th>Tên sách</th>
-                                <th>Phiên bản</th>
-                                <th>Giá</th>
-                                <th>Số lượng</th>
-                                <th>Tạm tính</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($cartItems as $item): ?>
-                                <tr>
-                                    <td width="90">
-                                        <img src="<?= htmlspecialchars($item['image'] ?? '') ?>"
-                                             alt="<?= htmlspecialchars($item['title'] ?? '') ?>"
-                                             style="width:70px;height:90px;object-fit:cover;">
-                                    </td>
-                                    <td><?= htmlspecialchars($item['title'] ?? '') ?></td>
-                                    <td>
-                                        <?= htmlspecialchars($item['format_name'] ?? '') ?> -
-                                        <?= htmlspecialchars($item['language_name'] ?? '') ?>
-                                    </td>
-                                    <td class="text-primary fw-bold">
-                                        <?= number_format($item['price'] ?? 0, 0, ',', '.') ?> đ
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <a href="index.php?action=/cart/decrease&variant_id=<?= $item['variant_id'] ?>"
-                                               class="btn btn-outline-secondary btn-sm">-</a>
-
-                                            <span class="fw-bold"><?= $item['quantity'] ?? 1 ?></span>
-
-                                            <a href="index.php?action=/cart/increase&variant_id=<?= $item['variant_id'] ?>"
-                                               class="btn btn-outline-secondary btn-sm">+</a>
-                                        </div>
-                                    </td>
-                                    <td class="fw-bold">
-                                        <?= number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 0), 0, ',', '.') ?> đ
-                                    </td>
-                                    <td>
-                                        <a href="index.php?action=/cart/remove&variant_id=<?= $item['variant_id'] ?>"
-                                           class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Bạn có muốn xóa sản phẩm này không?')">
-                                            Xóa
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+<main class="container checkout-container py-5">
+    <div class="row">
+        <!-- Thông tin khách hàng -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Thông tin khách hàng</h5>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
-                    <a href="index.php?action=/cart/clear"
-                       class="btn btn-outline-danger"
-                       onclick="return confirm('Bạn có muốn xóa toàn bộ giỏ hàng không?')">
-                        Xóa toàn bộ
-                    </a>
-
-                    <div class="text-end">
-                        <h4>Tổng tiền:
-                            <span class="text-primary fw-bold">
-                                <?= number_format($total, 0, ',', '.') ?> đ
-                            </span>
-                        </h4>
-                        <a href="index.php?action=/checkout" class="btn btn-success mt-2">
-                            Tiến hành thanh toán
-                        </a>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên</label>
+                        <p class="form-control-plaintext"><?= htmlspecialchars($user['name'] ?? '') ?></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <p class="form-control-plaintext"><?= htmlspecialchars($user['email'] ?? '') ?></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Số điện thoại</label>
+                        <p class="form-control-plaintext"><?= htmlspecialchars($user['phone'] ?? 'Chưa cập nhật') ?></p>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">Địa chỉ</label>
+                        <p class="form-control-plaintext"><?= htmlspecialchars($user['address'] ?? 'Chưa cập nhật') ?></p>
                     </div>
                 </div>
-            <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Tóm tắt đơn hàng -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Tóm tắt đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-summary">
+                        <?php foreach ($cartItems as $item): ?>
+                            <div class="item-row">
+                                <div class="d-flex justify-content-between">
+                                    <div class="flex-grow-1">
+                                        <strong><?= htmlspecialchars($item['title'] ?? '') ?></strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <?= htmlspecialchars($item['format_name'] ?? '') ?> - 
+                                            <?= htmlspecialchars($item['language_name'] ?? '') ?>
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">Số lượng: <strong><?= $item['quantity'] ?></strong></small>
+                                    </div>
+                                    <div class="text-end ms-3">
+                                        <div class="fw-bold text-primary">
+                                            <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?> đ
+                                        </div>
+                                        <small class="text-muted">
+                                            <?= number_format($item['price'], 0, ',', '.') ?> đ/cái
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <div class="total-row d-flex justify-content-between">
+                        <span>Tổng tiền:</span>
+                        <span class="text-danger"><?= number_format($total, 0, ',', '.') ?> đ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <form method="POST" action="index.php?action=/checkout/store" class="d-flex gap-3 justify-content-center">
+                <a href="index.php?action=/cart" class="btn btn-outline-secondary btn-lg px-5">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại giỏ hàng
+                </a>
+                <button type="submit" class="btn btn-success btn-lg px-5">
+                    <i class="fas fa-check me-2"></i>Xác nhận đặt hàng
+                </button>
+            </form>
         </div>
     </div>
 </main>

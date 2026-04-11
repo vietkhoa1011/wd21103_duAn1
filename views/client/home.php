@@ -10,7 +10,7 @@ $search_keyword = trim($_GET['search'] ?? '');
 $filtered_books = $books;
 if (!empty($selected_category)) {
     $filtered_books = array_filter($filtered_books, function($book) use ($selected_category) {
-        return $book['category'] === $selected_category;
+        return $book['category_name'] === $selected_category;
     });
 }
 if (!empty($search_keyword)) {
@@ -19,7 +19,7 @@ if (!empty($search_keyword)) {
     });
 }
 
-// --- Phân trang (5 sách/trang) ---
+// --- Phân trang (6 sách/trang) ---
 $items_per_page = 6;
 $total_items = count($filtered_books);
 $total_pages = ceil($total_items / $items_per_page);
@@ -29,7 +29,7 @@ $offset = ($current_page - 1) * $items_per_page;
 $paginated_books = array_slice($filtered_books, $offset, $items_per_page, true);
 
 // Lấy danh sách danh mục duy nhất cho menu lọc
-$categories = array_unique(array_column($books, 'category'));
+$categories = array_unique(array_column($books, 'category_name'));
 
 
 
@@ -226,7 +226,7 @@ if (!empty($_SESSION['cart'])) {
                 <ul class="list-unstyled">
                     <li class="mb-3"><a href="<?= $_SERVER['PHP_SELF'] ?>" class="text-decoration-none d-flex justify-content-between <?= empty($selected_category) ? 'fw-bold text-primary' : 'text-dark' ?>">Tất cả <span class="text-muted">(<?= count($books) ?>)</span></a></li>
                     <?php foreach ($categories as $cat): 
-                        $count = count(array_filter($books, fn($b) => $b['category'] === $cat));
+                        $count = count(array_filter($books, fn($b) => $b['category_name'] === $cat));
                     ?>
                     <li class="mb-3">
                         <a href="?category=<?= urlencode($cat) ?><?= !empty($search_keyword) ? '&search='.urlencode($search_keyword) : '' ?>" class="text-decoration-none d-flex justify-content-between <?= $selected_category === $cat ? 'fw-bold text-primary' : 'text-dark' ?>">
@@ -253,10 +253,10 @@ if (!empty($_SESSION['cart'])) {
             <?php else: ?>
            <div class="row g-4">
             <?php foreach ($paginated_books as $book): 
-                $id = $book['id'] ?? 0;
+                $id = $book['book_id'] ?? 0;
                 $image = $book['image'] ?? 'https://via.placeholder.com/400x250?text=No+Image';
                 $title = $book['title'] ?? 'Chưa có tên sách';
-                $category = $book['category'] ?? '';
+                $category = $book['category_name'] ?? '';
                 $author = $book['author'] ?? 'Chưa có tác giả';
                 
                 $desc = strip_tags($book['description'] ?? '');
@@ -275,10 +275,10 @@ if (!empty($_SESSION['cart'])) {
                         <p class="text-muted small mb-3">Tác giả: <?= htmlspecialchars($author) ?></p>
                         <p class="text-muted small mb-3 flex-grow-1"><?= htmlspecialchars($desc) ?></p>
                         <div class="d-flex gap-2 mt-auto">
-                       <a href="index.php?action=/book/detail&id=<?= $book['book_id'] ?? 0 ?>" class="btn btn-outline-primary flex-fill">
+                       <a href="index.php?action=/book/detail&id=<?= $id ?>" class="btn btn-outline-primary flex-fill">
                             Xem chi tiết
                         </a>
-                            <a href="cart.php?action=add&id=<?= $id ?>" class="btn btn-primary flex-fill">
+                            <a href="index.php?action=/cart&add=<?= $id ?>" class="btn btn-primary flex-fill">
                                 Mua
                             </a>
                         </div>

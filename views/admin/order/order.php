@@ -5,6 +5,7 @@ if (!isset($orders)) {
 $current_status = $_GET['status'] ?? '';
 ?>
 
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -79,6 +80,8 @@ $current_status = $_GET['status'] ?? '';
 
     /* Status Badge */
     .badge-pending { background-color: #00d2ff; color: white; border-radius: 12px; }
+.badge-delivered { background-color: #28a745; color: white; border-radius: 12px; }
+.badge-cancelled { background-color: red; color: white; border-radius: 12px; }
     .badge-unpaid { background-color: #ffc107; color: white; border-radius: 5px; }
 </style>
 
@@ -126,9 +129,19 @@ $current_status = $_GET['status'] ?? '';
                             <td><?= date('d/m/Y H:i', strtotime($row['order_date'])) ?></td>
                             <td class="text-danger fw-bold"><?= number_format($row['total_price']) ?>đ</td>
                             <td>
-                                <span class="badge badge-pending px-3 py-2">
-                                    <?= ucfirst($row['status']) ?>
-                                </span>
+                                <?php
+                                    $status = strtolower($row['status']);
+                                    $badgeClass = match($status) {
+                                        'pending' => 'badge-pending',
+                                        'delivered' => 'badge-delivered',
+                                        'cancelled' => 'badge-cancelled',
+                                        default => 'badge-secondary'
+                                    };
+                                    ?>
+
+                                    <span class="badge <?= $badgeClass ?> px-3 py-2">
+                                        <?= ucfirst($row['status']) ?>
+                                    </span>
                             </td>
                             <td>
                                 <span class="badge badge-unpaid px-2 py-1">

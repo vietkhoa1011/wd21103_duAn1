@@ -8,6 +8,7 @@ require_once __DIR__ . '/../controllers/admin/CategoryController.php';
 require_once __DIR__ . '/../controllers/admin/OrderController.php';
 require_once __DIR__ . '/../controllers/client/BookDetailController.php';
 require_once __DIR__ . '/../controllers/client/CartController.php';
+require_once __DIR__ . '/../controllers/client/CheckoutController.php';
 $action = $_GET['action'] ?? '/';
 
 match ($action) {
@@ -21,6 +22,10 @@ match ($action) {
     '/cart/decrease'    => (new CartController)->decrease(),
     '/cart/remove'      => (new CartController)->remove(),
     '/cart/clear'       => (new CartController)->clear(),
+    
+    // Checkout
+    '/checkout'         => (new CheckoutController)->index(),
+    '/checkout/store'   => (new CheckoutController)->store(),
 
     // Admin user
     '/user'         => (new UserController)->user(),
