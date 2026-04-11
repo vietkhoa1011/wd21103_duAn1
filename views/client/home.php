@@ -34,6 +34,16 @@ $categories = array_unique(array_column($books, 'category'));
 
 
 ?>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$cartCount = 0;
+if (!empty($_SESSION['cart'])) {
+    $cartCount = count($_SESSION['cart']);
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -172,6 +182,14 @@ $categories = array_unique(array_column($books, 'category'));
               <a href="index.php?action=/book" class="btn btn-outline-light ms-3" title="Quản lý sách">
                 <i class="fas fa-book-open"></i>
             </a>
+           <a href="index.php?action=/cart" class="btn btn-outline-light ms-3 position-relative" title="Giỏ hàng">
+                <i class="fas fa-shopping-cart"></i>
+                <?php if ($cartCount > 0): ?>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <?= $cartCount ?>
+                    </span>
+                <?php endif; ?>
+            </a>
             </form>
         </div>
     </div>
@@ -233,30 +251,42 @@ $categories = array_unique(array_column($books, 'category'));
                     Không tìm thấy sách nào phù hợp.
                 </div>
             <?php else: ?>
-            <div class="row g-4">
-                <?php foreach ($paginated_books as $book): 
-                    $image = $book['image'] ?? 'https://via.placeholder.com/400x250?text=No+Image';
-                    $desc = strip_tags($book['description'] ?? '');
-                    if (strlen($desc) > 120) $desc = substr($desc, 0, 117) . '...';
-                ?>
-                <div class="col-md-4 col-sm-6 d-flex align-items-stretch">
-                    <div class="book-card card overflow-hidden shadow-sm border h-100 w-100 d-flex flex-column">
-                        <div class="position-relative overflow-hidden" style="height: 500px;">
-                            <img src="<?= htmlspecialchars($image) ?>" class="card-img-top h-100 w-100 object-fit-cover" alt="<?= htmlspecialchars($book['title']) ?>">
-                        </div>
-                        <div class="card-body d-flex flex-column flex-grow-1">
-                            <p class="text-primary fw-bold text-uppercase small mb-1"><?= htmlspecialchars($book['category'] ?? '') ?></p>
-                            <h5 class="card-title fw-bold text-dark mb-2 text-truncate"><?= htmlspecialchars($book['title']) ?></h5>
-                            <p class="text-muted small mb-3">Tác giả: <?= htmlspecialchars($book['author']) ?></p>
-                            <p class="text-muted small mb-3 flex-grow-1"><?= htmlspecialchars($desc) ?></p>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <span class="fw-bold text-primary fs-5"><?= htmlspecialchars($book['price'] ?? '') ?></span>
-                            </div>
+           <div class="row g-4">
+            <?php foreach ($paginated_books as $book): 
+                $id = $book['id'] ?? 0;
+                $image = $book['image'] ?? 'https://via.placeholder.com/400x250?text=No+Image';
+                $title = $book['title'] ?? 'Chưa có tên sách';
+                $category = $book['category'] ?? '';
+                $author = $book['author'] ?? 'Chưa có tác giả';
+                
+                $desc = strip_tags($book['description'] ?? '');
+
+                if (strlen($desc) > 120) $desc = substr($desc, 0, 117) . '...';
+            ?>
+            <div class="col-md-4 col-sm-6 d-flex align-items-stretch">
+                <div class="book-card card overflow-hidden shadow-sm border h-100 w-100 d-flex flex-column">
+                    <div class="position-relative overflow-hidden" style="height: 500px;">
+                        <img src="<?= htmlspecialchars($image) ?>" class="card-img-top h-100 w-100 object-fit-cover" alt="<?= htmlspecialchars($title) ?>">
+                    </div>
+
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <p class="text-primary fw-bold text-uppercase small mb-1"><?= htmlspecialchars($category) ?></p>
+                        <h5 class="card-title fw-bold text-dark mb-2 text-truncate"><?= htmlspecialchars($title) ?></h5>
+                        <p class="text-muted small mb-3">Tác giả: <?= htmlspecialchars($author) ?></p>
+                        <p class="text-muted small mb-3 flex-grow-1"><?= htmlspecialchars($desc) ?></p>
+                        <div class="d-flex gap-2 mt-auto">
+                       <a href="index.php?action=/book/detail&id=<?= $book['book_id'] ?? 0 ?>" class="btn btn-outline-primary flex-fill">
+                            Xem chi tiết
+                        </a>
+                            <a href="cart.php?action=add&id=<?= $id ?>" class="btn btn-primary flex-fill">
+                                Mua
+                            </a>
                         </div>
                     </div>
                 </div>
-                <?php endforeach; ?>
             </div>
+            <?php endforeach; ?>
+        </div>
 
         <!-- Phân trang -->
             <?php if ($total_pages > 1): ?>
