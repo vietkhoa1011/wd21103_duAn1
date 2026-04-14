@@ -1,181 +1,328 @@
 <?php
+// --- Dữ liệu sách (giả định đã có sẵn từ controller) ---
 $image = $book['image'] ?? 'https://via.placeholder.com/500x700?text=No+Image';
 $title = $book['title'] ?? 'Chưa có tên sách';
 $author = $book['author'] ?? 'Chưa có tác giả';
 $description = $book['description'] ?? 'Chưa có mô tả';
 $category = $book['category_name'] ?? 'Chưa có danh mục';
-?>
-<?php
+
+// --- Session và giỏ hàng ---
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 $cartCount = 0;
 if (!empty($_SESSION['cart'])) {
     $cartCount = count($_SESSION['cart']);
 }
+$pageTitle = htmlspecialchars($book['title'] ?? 'Chi tiết sách') . ' · SmartBooks';
+include 'includes/header.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết sách</title>
-    
+    <title><?= htmlspecialchars($title) ?> · SmartBooks</title>
+
+    <!-- Bootstrap 5 + Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
     <style>
-        .card-img-top {
-            height: 250px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .navbar-brand,
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* ----- Hero section nhẹ nhàng ----- */
+        .detail-hero {
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%);
+            padding: 3rem 0;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .breadcrumb-custom a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .hero-cover {
+            border-radius: 24px;
+            box-shadow: 0 30px 40px -15px rgba(79, 70, 229, 0.2);
+            border: 4px solid white;
+            max-height: 360px;
+            width: auto;
             object-fit: cover;
+            transition: transform 0.3s ease;
         }
 
-        .book-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .hero-cover:hover {
+            transform: scale(1.02);
         }
 
-        .book-card:hover {
+        /* ----- Card chi tiết ----- */
+        .detail-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            height: 100%;
+        }
+
+        .category-badge {
+            background: #eef2ff;
+            color: #4f46e5;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 40px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .book-title-detail {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #0f172a;
+        }
+
+        .author-info {
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .author-info i {
+            color: #4f46e5;
+            width: 24px;
+        }
+
+        .description-text {
+            color: #334155;
+            line-height: 1.7;
+        }
+
+        /* ----- Bảng phiên bản ----- */
+        .variants-table {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.02);
+        }
+
+        .variants-table thead th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 1rem;
+        }
+
+        .variants-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            background: white;
+        }
+
+        .price-tag {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1.2rem;
+        }
+
+        .btn-soft-primary {
+            background: #eef2ff;
+            color: #4f46e5;
+            border: none;
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+        }
+
+        .btn-soft-primary:hover {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-primary-gradient {
+            background: linear-gradient(145deg, #4f46e5, #6366f1);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            box-shadow: 0 8px 16px -6px #4f46e580;
+            transition: all 0.2s;
+        }
+
+        .btn-primary-gradient:hover {
+            background: #4338ca;
+            box-shadow: 0 10px 20px -5px #4f46e5;
+            transform: scale(1.02);
+            color: white;
+        }
+
+        .btn-outline-secondary-custom {
+            border: 1.5px solid #cbd5e1;
+            color: #475569;
+            border-radius: 40px;
+            padding: 0.6rem 1.8rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-outline-secondary-custom:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 25px #4f46e5a0;
+            transition: 0.2s;
+            z-index: 1000;
+            text-decoration: none;
+        }
+
+        .back-to-top:hover {
+            background: #1e293b;
+            color: white;
             transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.02);
-        }
-
-        .hero-img {
-            border-radius: 16px;
-            transition: all 0.5s ease;
-            transform: rotate(3deg) scale(1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            animation: floating 3s ease-in-out infinite;
-        }
-
-        .hero-img:hover {
-            transform: rotate(0deg) scale(1.05);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes floating {
-            0% { transform: translateY(0px) rotate(3deg); }
-            50% { transform: translateY(-10px) rotate(3deg); }
-            100% { transform: translateY(0px) rotate(3deg); }
         }
     </style>
 </head>
-<body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
-    <div class="container">
-        <a href="index.php" class="navbar-brand fw-bold text-white">
-            <i class="fas fa-book-open me-2 text-primary"></i>SmartBooks
-        </a>
+<body>
 
-        <div class="d-none d-md-flex flex-grow-1 mx-5">
-            <form method="GET" action="index.php" class="w-100 d-flex align-items-center">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control border-primary" placeholder="Tìm tên sách, tác giả...">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
+    <!-- ==================== HERO ==================== -->
+    <section class="detail-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="breadcrumb-custom mb-3">
+                        <a href="index.php"><i class="fas fa-home me-1"></i>Trang chủ</a>
+                        <span class="mx-2 text-muted">/</span>
+                        <a href="index.php?category=<?= urlencode($category) ?>"><?= htmlspecialchars($category) ?></a>
+                        <span class="mx-2 text-muted">/</span>
+                        <span class="text-secondary"><?= htmlspecialchars($title) ?></span>
+                    </div>
+                    <h1 class="hero-title"><?= htmlspecialchars($title) ?></h1>
+                    <p class="lead text-secondary mt-3">Khám phá chi tiết và các phiên bản đặc biệt</p>
                 </div>
-
-                <a href="index.php?action=/profile" class="btn btn-outline-light ms-3">
-                    <i class="fas fa-user"></i>
-                </a>
-
-                <a href="index.php?action=/book" class="btn btn-outline-light ms-3" title="Quản lý sách">
-                    <i class="fas fa-book-open"></i>
-                </a>
-                <a href="index.php?action=/cart" class="btn btn-outline-light ms-3 position-relative" title="Giỏ hàng">
-                    <i class="fas fa-shopping-cart"></i>
-                    <?php if ($cartCount > 0): ?>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            <?= $cartCount ?>
-                        </span>
-                    <?php endif; ?>
-                </a>
-            </form>
-        </div>
-    </div>
-</nav>
-
-<header class="bg-primary text-white py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1 class="display-5 fw-bold mb-3">Chi tiết sách</h1>
-                <p class="lead mb-0">Xem thông tin chi tiết và các phiên bản của sách.</p>
-            </div>
-            <div class="col-md-6 text-center mt-4 mt-md-0">
-                <img src="<?= htmlspecialchars($image) ?>"
-                     alt="<?= htmlspecialchars($title) ?>"
-                     class="img-fluid rounded shadow hero-img"
-                     style="max-height: 320px; object-fit: cover;">
+                <!-- <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                    <img src="<?= htmlspecialchars($image) ?>"
+                        alt="<?= htmlspecialchars($title) ?>"
+                        class="hero-cover img-fluid">
+                </div> -->
             </div>
         </div>
-    </div>
-</header>
+    </section>
 
-<main class="container py-5">
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0 overflow-hidden">
-                <img src="<?= htmlspecialchars($image) ?>"
-                     alt="<?= htmlspecialchars($title) ?>"
-                     class="w-100"
-                     style="height: 600px; object-fit: cover;">
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="container pb-5">
+        <div class="row g-5">
+            <!-- Cột trái: Ảnh lớn (có thể thêm ảnh khác nếu muốn) -->
+            <div class="col-lg-5">
+                <div class="position-sticky" style="top: 100px;">
+                    <div class="bg-white p-3 rounded-4 shadow-sm border">
+                        <img src="<?= htmlspecialchars($image) ?>"
+                            alt="<?= htmlspecialchars($title) ?>"
+                            class="w-100 rounded-3"
+                            style="object-fit: cover; max-height: 600px;">
+                    </div>
+                    <!-- Thông tin bổ sung (có thể thêm đánh giá sau) -->
+                    <div class="mt-4 d-flex gap-2">
+                        <span class="badge bg-light text-dark p-3 rounded-4"><i class="far fa-bookmark text-primary me-1"></i> <?= htmlspecialchars($category) ?></span>
+                        <span class="badge bg-light text-dark p-3 rounded-4"><i class="far fa-user text-primary me-1"></i> <?= htmlspecialchars($author) ?></span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body p-4">
-                    <p class="text-primary fw-bold text-uppercase small mb-2">
-                        <?= htmlspecialchars($category) ?>
-                    </p>
-
-                    <h2 class="fw-bold mb-3"><?= htmlspecialchars($title) ?></h2>
-
-                    <p class="text-muted mb-2">
-                        <strong>Tác giả:</strong> <?= htmlspecialchars($author) ?>
-                    </p>
-
-                    <div class="mb-4">
-                        <h5 class="fw-bold">Mô tả</h5>
-                        <p class="text-muted mb-0"><?= nl2br(htmlspecialchars($description)) ?></p>
+            <!-- Cột phải: Chi tiết và bảng biến thể -->
+            <div class="col-lg-7">
+                <div class="detail-card">
+                    <span class="category-badge mb-3"><i class="far fa-folder-open me-1"></i><?= htmlspecialchars($category) ?></span>
+                    <h2 class="book-title-detail mt-3"><?= htmlspecialchars($title) ?></h2>
+                    <div class="author-info d-flex align-items-center mt-2 mb-4">
+                        <i class="fas fa-feather-alt"></i>
+                        <span class="ms-2"><?= htmlspecialchars($author) ?></span>
                     </div>
 
-                    <div class="mb-4">
-                        <h5 class="fw-bold">Phiên bản sách</h5>
+                    <div class="description-text mb-5">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-align-left text-primary me-2"></i>Mô tả sách</h5>
+                        <p><?= nl2br(htmlspecialchars($description)) ?></p>
+                    </div>
+
+                    <div class="variants-section">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-layer-group text-primary me-2"></i>Phiên bản có sẵn</h5>
 
                         <?php if (!empty($variants)): ?>
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle">
-                                    <thead class="table-light">
+                            <div class="table-responsive variants-table">
+                                <table class="table table-borderless align-middle mb-0">
+                                    <thead>
                                         <tr>
                                             <th>Định dạng</th>
                                             <th>Ngôn ngữ</th>
-                                            <th>Giá</th>
-                                            <th>Hành động</th>
+                                            <th>Giá bán</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($variants as $variant): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($variant['format_name'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($variant['language_name'] ?? '') ?></td>
-                                                <td class="fw-bold text-primary">
-                                                    <?= number_format($variant['price'] ?? 0, 0, ',', '.') ?> đ
+                                                <td>
+                                                    <span class="fw-semibold"><i class="far fa-file-alt me-1 text-secondary"></i><?= htmlspecialchars($variant['format_name'] ?? 'Bìa mềm') ?></span>
                                                 </td>
-                                                <td class="d-flex gap-2">
-                                                   <a href="index.php?action=/cart/add&variant_id=<?= $variant['variant_id'] ?? 0 ?>" 
-                                                    class="btn btn-success btn-sm">
-                                                        Thêm vào giỏ hàng
-                                                    </a>
-
-                                                    <a href="index.php?action=/checkout&variant_id=<?= $variant['variant_id'] ?? 0 ?>" 
-                                                    class="btn btn-primary btn-sm">
-                                                        Mua ngay
-                                                    </a>
+                                                <td>
+                                                    <span><i class="fas fa-globe me-1 text-secondary"></i><?= htmlspecialchars($variant['language_name'] ?? 'Tiếng Việt') ?></span>
+                                                </td>
+                                                <td>
+                                                    <span class="price-tag"><?= number_format($variant['price'] ?? 0, 0, ',', '.') ?> đ</span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="d-flex gap-2 justify-content-end">
+                                                        <a href="index.php?action=/cart/add&variant_id=<?= $variant['variant_id'] ?? 0 ?>"
+                                                            class="btn btn-soft-primary">
+                                                            <i class="fas fa-cart-plus me-1"></i>Thêm
+                                                        </a>
+                                                        <a href="index.php?action=/checkout&variant_id=<?= $variant['variant_id'] ?? 0 ?>"
+                                                            class="btn btn-primary-gradient">
+                                                            Mua ngay
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -183,58 +330,39 @@ if (!empty($_SESSION['cart'])) {
                                 </table>
                             </div>
                         <?php else: ?>
-                            <div class="alert alert-warning mb-0">
-                                Sách này hiện chưa có phiên bản nào.
+                            <div class="alert bg-light border-0 rounded-4 p-4 text-center">
+                                <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                                <p class="mb-0">Hiện chưa có phiên bản nào cho cuốn sách này.</p>
                             </div>
                         <?php endif; ?>
                     </div>
 
-                    <a href="index.php" class="btn btn-outline-secondary">
-                        ← Quay lại trang chủ
-                    </a>
+                    <div class="mt-5">
+                        <a href="index.php" class="btn btn-outline-secondary-custom">
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại trang chủ
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
+    <?php
+    // Nhúng footer
+    include 'includes/footer.php';
+    ?>
+    <!-- Back to top -->
+    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
 
-<footer class="bg-dark text-light pt-5 pb-3 mt-5">
-    <div class="container">
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <div>
-                <h4 class="text-white fw-bold h5 mb-3">BookStore</h4>
-                <p class="small">Nơi kết nối đam mê đọc sách và lan tỏa tri thức đến mọi người Việt Nam.</p>
-            </div>
-            <div>
-                <h4 class="text-white fw-bold mb-3">Liên kết</h4>
-                <ul class="list-unstyled small">
-                    <li class="mb-2"><a href="#" class="text-light text-decoration-none">Trang chủ</a></li>
-                    <li class="mb-2"><a href="#" class="text-light text-decoration-none">Sách mới</a></li>
-                    <li class="mb-2"><a href="#" class="text-light text-decoration-none">Khuyến mãi</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white fw-bold mb-3">Hỗ trợ</h4>
-                <ul class="list-unstyled small">
-                    <li class="mb-2"><a href="#" class="text-light text-decoration-none">Chính sách vận chuyển</a></li>
-                    <li class="mb-2"><a href="#" class="text-light text-decoration-none">Đổi trả hàng</a></li>
-                    <li class="mb-2"><a href="#" class="text-light text-decoration-none">Liên hệ</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white fw-bold mb-3">Đăng ký nhận tin</h4>
-                <div class="d-flex flex-column">
-                    <input type="email" class="form-control bg-secondary border-0 mb-2 small" placeholder="Email của bạn">
-                    <button class="btn btn-primary small fw-bold">Đăng ký</button>
-                </div>
-            </div>
-        </div>
-        <div class="border-top border-secondary mt-5 pt-3 text-center small">
-            <p>&copy; 2024 BookStore. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelector('.back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </body>
+
 </html>
