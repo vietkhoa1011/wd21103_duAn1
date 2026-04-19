@@ -14,6 +14,30 @@ $cartCount = 0;
 if (!empty($_SESSION['cart'])) {
     $cartCount = count($_SESSION['cart']);
 }
+
+// --- Reviews ---
+require_once __DIR__ . '/../../models/ReviewModel.php';
+$reviewModel = new ReviewModel();
+$book_id = $book['book_id'] ?? 0;
+$reviews = [];
+$average_rating = 0;
+$review_count = 0;
+$user_can_review = false;
+$user_has_reviewed = false;
+
+if ($book_id > 0) {
+    // Lấy chỉ approved reviews
+    $reviews = $reviewModel->getReviewsByBookId($book_id, true);
+    $average_rating = $reviewModel->getAverageRating($book_id);
+    $review_count = $reviewModel->getReviewCount($book_id, true);
+
+    if (isset($_SESSION['user'])) {
+        $user_id = $_SESSION['user']['user_id'];
+        $user_can_review = $reviewModel->userCanReview($book_id, $user_id);
+        $user_has_reviewed = $reviewModel->userHasReviewed($book_id, $user_id);
+    }
+}
+
 $pageTitle = htmlspecialchars($book['title'] ?? 'Chi tiết sách') . ' · SmartBooks';
 include 'includes/header.php';
 ?>
@@ -87,7 +111,7 @@ include 'includes/header.php';
             padding: 2rem;
             box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.05);
             border: 1px solid #f1f5f9;
-            height: 100%;
+
         }
 
         .category-badge {
@@ -225,7 +249,7 @@ include 'includes/header.php';
     </style>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!-- ==================== HERO ==================== -->
     <section class="detail-hero">
@@ -343,6 +367,14 @@ include 'includes/header.php';
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="row g-5 mt-2">
+            <div class="col-lg-12">
+                <?php include 'includes/review_list.php'; ?>
+                <?php include 'includes/review_form.php'; ?>
             </div>
         </div>
     </main>

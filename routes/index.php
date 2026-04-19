@@ -9,6 +9,8 @@ require_once __DIR__ . '/../controllers/admin/OrderController.php';
 require_once __DIR__ . '/../controllers/client/BookDetailController.php';
 require_once __DIR__ . '/../controllers/client/CartController.php';
 require_once __DIR__ . '/../controllers/client/CheckoutController.php';
+require_once __DIR__ . '/../controllers/client/ReviewController.php';
+require_once __DIR__ . '/../controllers/admin/ReviewAdminController.php';
 $action = $_GET['action'] ?? '/';
 
 match ($action) {
@@ -66,6 +68,15 @@ match ($action) {
     // Book detail
     '/book/detail'  => (new BookDetailController)->detail(),
 
+    // Review
+    '/review/add'   => (new ReviewController)->addReview(),
+    '/review/list'  => (new ReviewController)->getReviewsForBook(),
+
+    // Admin Review
+    '/admin/review'         => (new ReviewAdminController)->listReviews(),
+    '/admin/review/approve' => (new ReviewAdminController)->approveReview(),
+    '/admin/review/reject'  => (new ReviewAdminController)->rejectReview(),
+    '/admin/review/delete'  => (new ReviewAdminController)->deleteReview(),
 
     default => die('404 - Không tìm thấy trang')
 };
