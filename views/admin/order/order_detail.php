@@ -52,7 +52,7 @@ if (!isset($orderDetails)) {
     .detail-card {
         background: white;
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         padding: 25px;
         margin-bottom: 20px;
     }
@@ -96,11 +96,54 @@ if (!isset($orderDetails)) {
         border-bottom: 1px solid #f1f1f1;
     }
 
-    .badge-pending { background-color: #00d2ff; color: white; border-radius: 12px; padding: 6px 12px; }
-    .badge-delivered { background-color: #28a745; color: white; border-radius: 12px; padding: 6px 12px; }
-    .badge-cancelled { background-color: #dc3545; color: white; border-radius: 12px; padding: 6px 12px; }
-    .badge-unpaid { background-color: #ffc107; color: white; border-radius: 5px; padding: 4px 10px; }
-    .badge-paid { background-color: #28a745; color: white; border-radius: 5px; padding: 4px 10px; }
+    .badge-pending {
+        background-color: #ffc107;
+        color: white;
+        border-radius: 12px;
+        padding: 6px 12px;
+    }
+
+    .badge-processing {
+        background-color: #00d2ff;
+        color: white;
+        border-radius: 12px;
+        padding: 6px 12px;
+    }
+
+    .badge-shipped {
+        background-color: #0066cc;
+        color: white;
+        border-radius: 12px;
+        padding: 6px 12px;
+    }
+
+    .badge-delivered {
+        background-color: #28a745;
+        color: white;
+        border-radius: 12px;
+        padding: 6px 12px;
+    }
+
+    .badge-cancelled {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 12px;
+        padding: 6px 12px;
+    }
+
+    .badge-unpaid {
+        background-color: #ffc107;
+        color: white;
+        border-radius: 5px;
+        padding: 4px 10px;
+    }
+
+    .badge-paid {
+        background-color: #28a745;
+        color: white;
+        border-radius: 5px;
+        padding: 4px 10px;
+    }
 
     .action-btn {
         margin-top: 10px;
@@ -139,7 +182,7 @@ if (!isset($orderDetails)) {
         <!-- Thông tin chung -->
         <div class="detail-card">
             <h5 class="mb-4">Thông tin đơn hàng</h5>
-            
+
             <div class="info-row">
                 <div class="info-item">
                     <span class="info-label">Khách hàng</span>
@@ -166,8 +209,19 @@ if (!isset($orderDetails)) {
                 <div class="info-item">
                     <span class="info-label">Trạng thái giao hàng</span>
                     <span>
-                        <span class="badge badge-<?= strtolower($order['status'] ?? 'pending') ?>">
-                            <?= ucfirst($order['status'] ?? 'pending') ?>
+                        <?php
+                        $status = strtolower($order['status'] ?? 'pending');
+                        $statusText = match ($status) {
+                            'pending' => 'Chờ xác nhận',
+                            'processing' => 'Đang xử lý',
+                            'shipped' => 'Đang giao',
+                            'delivered' => 'Đã giao',
+                            'cancelled' => 'Đã hủy',
+                            default => ucfirst($status)
+                        };
+                        ?>
+                        <span class="badge badge-<?= $status ?>">
+                            <?= $statusText ?>
                         </span>
                     </span>
                 </div>
@@ -185,7 +239,7 @@ if (!isset($orderDetails)) {
         <!-- Chi tiết sản phẩm -->
         <div class="detail-card">
             <h5 class="mb-4">Chi tiết sản phẩm</h5>
-            
+
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -199,16 +253,16 @@ if (!isset($orderDetails)) {
                     </thead>
                     <tbody>
                         <?php if (!empty($orderDetails)): ?>
-                            <?php foreach($orderDetails as $item): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($item['book_name'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($item['format_name'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($item['language_name'] ?? '-') ?></td>
-                                <td style="text-align: center;"><?= intval($item['quantity'] ?? 0) ?></td>
-                                <td style="text-align: right;">
-                                    <strong><?= number_format($item['price'] ?? 0) ?>đ</strong>
-                                </td>
-                            </tr>
+                            <?php foreach ($orderDetails as $item): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($item['book_name'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($item['format_name'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($item['language_name'] ?? '-') ?></td>
+                                    <td style="text-align: center;"><?= intval($item['quantity'] ?? 0) ?></td>
+                                    <td style="text-align: right;">
+                                        <strong><?= number_format($item['price'] ?? 0) ?>đ</strong>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
@@ -223,21 +277,39 @@ if (!isset($orderDetails)) {
         <!-- Form update trạng thái -->
         <div class="detail-card">
             <h5 class="mb-4">Cập nhật trạng thái</h5>
-            
+
+            <?php $isLocked = isset($order['status']) && $order['status'] === 'delivered'; ?>
             <form method="POST" action="?action=/order/update" class="d-flex align-items-end gap-3">
                 <input type="hidden" name="id" value="<?= htmlspecialchars($order['order_id'] ?? '') ?>">
-                
+
                 <div class="flex-grow-1">
                     <label class="form-label fw-600">Trạng thái giao hàng</label>
-                    <select name="status" class="form-select" required>
-                        <option value="pending" <?= ($order['status'] ?? '') == 'pending' ? 'selected' : '' ?>>Chờ xử lý</option>
+                    <select name="status" class="form-select" required <?= $isLocked ? 'disabled' : '' ?>>
+                        <option value="pending" <?= ($order['status'] ?? '') == 'pending' ? 'selected' : '' ?>>Chờ xác nhận</option>
+                        <option value="processing" <?= ($order['status'] ?? '') == 'processing' ? 'selected' : '' ?>>Đang xử lý</option>
+                        <option value="shipped" <?= ($order['status'] ?? '') == 'shipped' ? 'selected' : '' ?>>Đang giao</option>
                         <option value="delivered" <?= ($order['status'] ?? '') == 'delivered' ? 'selected' : '' ?>>Đã giao</option>
-                        <option value="cancelled" <?= ($order['status'] ?? '') == 'cancelled' ? 'selected' : '' ?>>Hủy</option>
+                        <option value="cancelled" <?= ($order['status'] ?? '') == 'cancelled' ? 'selected' : '' ?>>Đã hủy</option>
                     </select>
                 </div>
-                
-                <button type="submit" class="btn btn-primary px-4">Cập nhật</button>
+
+                <div style="width:200px;">
+                    <label class="form-label fw-600">Trạng thái thanh toán</label>
+                    <select name="payment_status" class="form-select" <?= $isLocked ? 'disabled' : '' ?>>
+                        <option value="unpaid" <?= ($order['payment_status'] ?? '') == 'unpaid' ? 'selected' : '' ?>>Chưa thanh toán</option>
+                        <option value="paid" <?= ($order['payment_status'] ?? '') == 'paid' ? 'selected' : '' ?>>Đã thanh toán</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary px-4" <?= $isLocked ? 'disabled' : '' ?>>Cập nhật</button>
+                </div>
             </form>
+            <?php if ($isLocked): ?>
+                <div class="mt-3">
+                    <div class="alert alert-info mb-0">Đơn hàng đã được giao nên không thể chỉnh sửa trạng thái hoặc thanh toán.</div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

@@ -145,13 +145,13 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : '';
                     <?php if (!empty($selected_category)): ?>
                         <input type="hidden" name="category" value="<?= htmlspecialchars($selected_category) ?>">
                     <?php endif; ?>
-                    <a href="index.php?action=/profile" class="btn btn-outline-light ms-3 rounded-4 px-3">
+                    <a href="index.php?action=/profile" class="btn btn-outline-light ms-3 rounded-4 px-3" title="Người dùng ">
                         <i class="fas fa-user"></i>
                     </a>
                     <a href="index.php?action=/book" class="btn btn-outline-light ms-2 rounded-4 px-3" title="Quản lý sách">
                         <i class="fas fa-book-open"></i>
                     </a>
-                    <a href="index.php?action=/cart" class="btn btn-outline-light ms-2 rounded-4 px-3 position-relative">
+                    <a href="index.php?action=/cart" class="btn btn-outline-light ms-2 rounded-4 px-3 position-relative" title="Giỏ hàng">
                         <i class="fas fa-shopping-cart"></i>
                         <?php if ($cartCount > 0): ?>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">

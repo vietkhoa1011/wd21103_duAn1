@@ -10,25 +10,25 @@ $cartCount = count($cartItems); // Số sản phẩm trong giỏ (để hiển t
 $pageTitle = 'Giỏ hàng · SmartBooks';
 
 // Nhúng header
-include __DIR__ . '/includes/header.php';
-?>
+include 'includes/header.php';
 
+?>
 <!-- ==================== HERO SECTION ==================== -->
-<section class="detail-hero" style="background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%); padding: 3rem 0; margin-bottom: 2.5rem;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1 class="hero-title" style="font-size: 2.8rem; font-weight: 700; color: #0f172a; font-family: 'Playfair Display', serif;">Giỏ hàng của bạn</h1>
-                <p class="lead text-secondary mt-3">Xem lại các sản phẩm đã chọn và điều chỉnh số lượng trước khi thanh toán.</p>
-            </div>
-            <div class="col-md-6 text-center mt-4 mt-md-0">
-                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600"
-                    alt="Cart Hero"
-                    class="hero-cover img-fluid"
-                    style="border-radius: 24px; box-shadow: 0 30px 40px -15px rgba(79, 70, 229, 0.2); border: 4px solid white; max-height: 360px; width: auto; object-fit: cover;">
-            </div>
+
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="hero-title" style="font-size: 2.8rem; font-weight: 700; color: #0f172a; font-family: 'Playfair Display', serif;">Giỏ hàng của bạn</h1>
+            <p class="lead text-secondary mt-3">Xem lại các sản phẩm đã chọn và điều chỉnh số lượng trước khi thanh toán.</p>
+        </div>
+        <div class="col-md-6 text-center mt-4 mt-md-0">
+            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600"
+                alt="Cart Hero"
+                class="hero-cover img-fluid"
+                style="border-radius: 24px; box-shadow: 0 30px 40px -15px rgba(79, 70, 229, 0.2); border: 4px solid white; max-height: 360px; width: auto; object-fit: cover;">
         </div>
     </div>
+</div>
 </section>
 
 <!-- ==================== MAIN CONTENT ==================== -->

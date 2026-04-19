@@ -25,6 +25,8 @@ include __DIR__ . '/includes/header.php';
             background-color: #f9fafb;
         }
     </style>
+
+
 </head>
 
 <body>
@@ -43,6 +45,22 @@ include __DIR__ . '/includes/header.php';
 
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="container py-5">
+        <?php if (!empty($_SESSION['success'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i><?= htmlspecialchars($_SESSION['success']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($_SESSION['error']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         <div class="row g-4">
             <!-- Cột trái: Thông tin cơ bản và Avatar -->
             <div class="col-lg-4">
@@ -155,7 +173,29 @@ include __DIR__ . '/includes/header.php';
                                                         <td><?= htmlspecialchars($order['order_date']) ?></td>
                                                         <td><?= htmlspecialchars($order['product_name']) ?></td>
                                                         <td class="fw-semibold text-primary"><?= number_format($order['total_amount'], 0, ',', '.') ?>đ</td>
-                                                        <td><span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Đã giao</span></td>
+                                                        <td>
+                                                            <?php
+                                                            $status = $order['status'] ?? 'pending';
+                                                            $statusText = match ($status) {
+                                                                'pending' => 'Chờ xác nhận',
+                                                                'processing' => 'Đang xử lý',
+                                                                'shipped' => 'Đang giao',
+                                                                'delivered' => 'Đã giao',
+                                                                'cancelled' => 'Đã hủy',
+                                                                default => ucfirst($status)
+                                                            };
+
+                                                            $badgeClass = match ($status) {
+                                                                'pending' => 'bg-warning bg-opacity-10 text-warning',
+                                                                'processing' => 'bg-info bg-opacity-10 text-info',
+                                                                'shipped' => 'bg-primary bg-opacity-10 text-primary',
+                                                                'delivered' => 'bg-success bg-opacity-10 text-success',
+                                                                'cancelled' => 'bg-danger bg-opacity-10 text-danger',
+                                                                default => 'bg-secondary bg-opacity-10 text-secondary'
+                                                            };
+                                                            ?>
+                                                            <span class="badge <?= $badgeClass ?> px-3 py-2 rounded-pill"><?= $statusText ?></span>
+                                                        </td>
                                                     </tr>
                                                 <?php endforeach; ?>
                                             </tbody>

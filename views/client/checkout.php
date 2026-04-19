@@ -118,6 +118,9 @@ include __DIR__ . '/includes/header.php';
     </div>
 </main>
 
+</body>
+
+</html>
 <?php
 // Nhúng footer
 include __DIR__ . '/includes/footer.php';

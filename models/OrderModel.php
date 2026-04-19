@@ -1,5 +1,5 @@
 <?php
-    class Order extends BaseModel
+class Order extends BaseModel
 {
     protected $table = 'orders';
 
@@ -36,6 +36,24 @@
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrdersByUserId($user_id)
+    {
+        $sql = "SELECT o.order_id, o.order_date, o.total_price as total_amount, o.status,
+                       b.title as product_name
+                FROM orders o
+                LEFT JOIN order_detail od ON o.order_id = od.order_id
+                LEFT JOIN book_variants bv ON od.variant_id = bv.variant_id
+                LEFT JOIN books b ON bv.book_id = b.book_id
+                WHERE o.user_id = :user_id
+                ORDER BY o.order_date DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getOrderDetails($order_id)
@@ -80,6 +98,21 @@
         return $stmt->execute();
     }
 
+    /**
+     * Update both status and payment_status for an order
+     */
+    public function updateOrder($id, $status, $payment_status)
+    {
+        $sql = "UPDATE orders SET status = :status, payment_status = :payment_status WHERE order_id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':payment_status', $payment_status);
+
+        return $stmt->execute();
+    }
+
     public function createOrder($user_id, $total_price, $status = 'pending', $payment_status = 'unpaid')
     {
         $sql = "INSERT INTO orders (user_id, total_price, status, payment_status, order_date) 
@@ -112,4 +145,3 @@
         return $stmt->execute();
     }
 }
-?>

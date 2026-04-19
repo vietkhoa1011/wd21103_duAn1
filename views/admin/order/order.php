@@ -56,7 +56,7 @@ $current_status = $_GET['status'] ?? '';
     .order-card {
         background: white;
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         overflow: hidden;
     }
 
@@ -79,10 +79,47 @@ $current_status = $_GET['status'] ?? '';
     }
 
     /* Status Badge */
-    .badge-pending { background-color: #00d2ff; color: white; border-radius: 12px; }
-.badge-delivered { background-color: #28a745; color: white; border-radius: 12px; }
-.badge-cancelled { background-color: red; color: white; border-radius: 12px; }
-    .badge-unpaid { background-color: #ffc107; color: white; border-radius: 5px; }
+    .badge-pending {
+        background-color: #ffc107;
+        color: white;
+        border-radius: 12px;
+    }
+
+    .badge-processing {
+        background-color: #00d2ff;
+        color: white;
+        border-radius: 12px;
+    }
+
+    .badge-shipped {
+        background-color: #0066cc;
+        color: white;
+        border-radius: 12px;
+    }
+
+    .badge-delivered {
+        background-color: #28a745;
+        color: white;
+        border-radius: 12px;
+    }
+
+    .badge-cancelled {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 12px;
+    }
+
+    .badge-unpaid {
+        background-color: #ffc107;
+        color: white;
+        border-radius: 5px;
+    }
+
+    .badge-paid {
+        background-color: #28a745;
+        color: white;
+        border-radius: 5px;
+    }
 </style>
 
 <div class="wrapper">
@@ -93,13 +130,17 @@ $current_status = $_GET['status'] ?? '';
     <div id="content">
         <header class="page-header">
             <h2 class="fw-bold">Quản lý đơn hàng</h2>
-            
-            <form method="GET" class="d-flex align-items-center">
+
+            <form method="GET" action="index.php" class="d-flex align-items-center">
                 <span class="me-2 text-muted">Lọc trạng thái:</span>
+                <input type="hidden" name="action" value="/order">
                 <select name="status" class="form-select border-0 shadow-sm" onchange="this.form.submit()" style="width: 200px;">
                     <option value="" <?= $current_status == '' ? 'selected' : '' ?>>-- Tất cả --</option>
-                    <option value="pending" <?= $current_status == 'pending' ? 'selected' : '' ?>>Chờ xử lý</option>
+                    <option value="pending" <?= $current_status == 'pending' ? 'selected' : '' ?>>Chờ xác nhận</option>
+                    <option value="processing" <?= $current_status == 'processing' ? 'selected' : '' ?>>Đang xử lý</option>
+                    <option value="shipped" <?= $current_status == 'shipped' ? 'selected' : '' ?>>Đang giao</option>
                     <option value="delivered" <?= $current_status == 'delivered' ? 'selected' : '' ?>>Đã giao</option>
+                    <option value="cancelled" <?= $current_status == 'cancelled' ? 'selected' : '' ?>>Đã hủy</option>
                 </select>
             </form>
         </header>
@@ -119,20 +160,30 @@ $current_status = $_GET['status'] ?? '';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($orders as $row): ?>
-                        <tr>
-                            <td class="fw-bold text-primary">#<?= $row['order_id'] ?></td>
-                            <td>
-                                <div class="fw-bold"><?= htmlspecialchars($row['name']) ?></div>
-                                <div class="text-muted small"><?= htmlspecialchars($row['email']) ?></div>
-                            </td>
-                            <td><?= date('d/m/Y H:i', strtotime($row['order_date'])) ?></td>
-                            <td class="text-danger fw-bold"><?= number_format($row['total_price']) ?>đ</td>
-                            <td>
-                                <?php
+                        <?php foreach ($orders as $row): ?>
+                            <tr>
+                                <td class="fw-bold text-primary">#<?= $row['order_id'] ?></td>
+                                <td>
+                                    <div class="fw-bold"><?= htmlspecialchars($row['name']) ?></div>
+                                    <div class="text-muted small"><?= htmlspecialchars($row['email']) ?></div>
+                                </td>
+                                <td><?= date('d/m/Y H:i', strtotime($row['order_date'])) ?></td>
+                                <td class="text-danger fw-bold"><?= number_format($row['total_price']) ?>đ</td>
+                                <td>
+                                    <?php
                                     $status = strtolower($row['status']);
-                                    $badgeClass = match($status) {
+                                    $statusText = match ($status) {
+                                        'pending' => 'Chờ xác nhận',
+                                        'processing' => 'Đang xử lý',
+                                        'shipped' => 'Đang giao',
+                                        'delivered' => 'Đã giao',
+                                        'cancelled' => 'Đã hủy',
+                                        default => ucfirst($status)
+                                    };
+                                    $badgeClass = match ($status) {
                                         'pending' => 'badge-pending',
+                                        'processing' => 'badge-processing',
+                                        'shipped' => 'badge-shipped',
                                         'delivered' => 'badge-delivered',
                                         'cancelled' => 'badge-cancelled',
                                         default => 'badge-secondary'
@@ -140,18 +191,34 @@ $current_status = $_GET['status'] ?? '';
                                     ?>
 
                                     <span class="badge <?= $badgeClass ?> px-3 py-2">
-                                        <?= ucfirst($row['status']) ?>
+                                        <?= $statusText ?>
                                     </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-unpaid px-2 py-1">
-                                    <?= $row['payment_status'] ?>
-                                </span>
-                            </td>
-                            <td>
-                                <a href="?action=/order/detail&id=<?= $row['order_id'] ?>" class="btn btn-outline-secondary btn-sm px-3">Chi tiết</a>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <?php
+                                    $payment = strtolower($row['payment_status']);
+
+                                    $paymentText = match ($payment) {
+                                        'paid' => 'Đã thanh toán',
+                                        'unpaid' => 'Chưa thanh toán',
+                                        default => ucfirst($payment)
+                                    };
+
+                                    $paymentClass = match ($payment) {
+                                        'paid' => 'badge-paid',
+                                        'unpaid' => 'badge-unpaid',
+                                        default => 'badge-secondary'
+                                    };
+                                    ?>
+
+                                    <span class="badge <?= $paymentClass ?> px-2 py-1">
+                                        <?= $paymentText ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="?action=/order/detail&id=<?= $row['order_id'] ?>" class="btn btn-outline-secondary btn-sm px-3">Chi tiết</a>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
