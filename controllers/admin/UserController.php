@@ -86,7 +86,7 @@ class UserController
     function create()
     {
         $this->authModel->checkAdmin();
-        require_once PATH_VIEW . './admin/user/creater.php';
+        require_once PATH_VIEW . '/admin/user/create.php';
     }
     function store()
     {

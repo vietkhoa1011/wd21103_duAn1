@@ -31,11 +31,11 @@ class UserModel extends BaseModel
         {
                 $sql = "UPDATE users SET name = :name, email = :email, phone = :phone, address = :address WHERE user_id = :id";
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
-                $stmt->bindParam(':email', $data['email'], PDO::PARAM_STR);
-                $stmt->bindParam(':phone', $data['phone'] ?? '', PDO::PARAM_STR);
-                $stmt->bindParam(':address', $data['address'] ?? '', PDO::PARAM_STR);
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmt->bindValue(':name', $data['name'], PDO::PARAM_STR);
+                $stmt->bindValue(':email', $data['email'], PDO::PARAM_STR);
+                $stmt->bindValue(':phone', $data['phone'] ?? '', PDO::PARAM_STR);
+                $stmt->bindValue(':address', $data['address'] ?? '', PDO::PARAM_STR);
+                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 return $stmt->execute();
         }
         function delete($id)
