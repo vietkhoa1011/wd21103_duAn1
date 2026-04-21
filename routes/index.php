@@ -65,6 +65,7 @@ match ($action) {
     '/order'            => (new OrderController)->viewOrders(),
     '/order/detail'     => (new OrderController)->viewOrderDetail(),
     '/order/update'     => (new OrderController)->updateOrder(),
+    '/statistics'       => (new OrderController)->viewStatistics(),
     // Book detail
     '/book/detail'  => (new BookDetailController)->detail(),
 

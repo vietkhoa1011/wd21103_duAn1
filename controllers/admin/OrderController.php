@@ -72,4 +72,15 @@ class OrderController
         $_SESSION['success'] = 'Cập nhật đơn hàng thành công.';
         header("Location: ?action=/order/detail&id=" . urlencode($id));
     }
+
+    public function viewStatistics()
+    {
+        $orderModel = new Order();
+
+        $dailyStats = $orderModel->getStatistics();
+        $monthlyStats = $orderModel->getMonthlyStatistics();
+        $totalStats = $orderModel->getTotalStats();
+
+        require_once PATH_VIEW . 'admin/order/statistics.php';
+    }
 }

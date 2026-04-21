@@ -144,4 +144,56 @@ class Order extends BaseModel
 
         return $stmt->execute();
     }
+
+    public function getStatistics()
+    {
+        $sql = "SELECT 
+            DATE(o.order_date) as order_date,
+            COUNT(o.order_id) as total_orders,
+            SUM(o.total_price) as total_revenue,
+            SUM(od.quantity) as total_items
+        FROM orders o
+        LEFT JOIN order_detail od ON o.order_id = od.order_id
+        WHERE o.status != 'cancelled'
+        GROUP BY DATE(o.order_date)
+        ORDER BY DATE(o.order_date) DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMonthlyStatistics()
+    {
+        $sql = "SELECT 
+            DATE_FORMAT(o.order_date, '%Y-%m') as month,
+            COUNT(o.order_id) as total_orders,
+            SUM(o.total_price) as total_revenue,
+            SUM(od.quantity) as total_items
+        FROM orders o
+        LEFT JOIN order_detail od ON o.order_id = od.order_id
+        WHERE o.status != 'cancelled'
+        GROUP BY month
+        ORDER BY month DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalStats()
+    {
+        $sql = "SELECT 
+                    COUNT(o.order_id) as total_orders,
+                    SUM(o.total_price) as total_revenue,
+                    SUM(od.quantity) as total_items,
+                    AVG(o.total_price) as avg_order_value
+                FROM orders o
+                LEFT JOIN order_detail od ON o.order_id = od.order_id
+                WHERE o.status != 'cancelled'";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
