@@ -63,7 +63,7 @@ class BookController
     }
 
     public function store(): void
-    {   
+    {
         $categoryModel = new CategoryModel();
         $categories = $categoryModel->getAllCategories();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -89,7 +89,7 @@ class BookController
             $errors['title'] = "Tên sách không được để trống";
         }
         if (strlen($title) < 3) {
-            $errors['title'] = "Tên sách phải >= 3 ký tự";  
+            $errors['title'] = "Tên sách phải >= 3 ký tự";
         }
         if ($author === '') {
             $errors['author'] = "Tác giả không được để trống";
@@ -136,6 +136,8 @@ class BookController
         $variants = $this->variantModel->getByBookId($id);
         $formats = $this->variantModel->getFormats();
         $languages = $this->variantModel->getLanguages();
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getAllCategories();
 
         include __DIR__ . '/../../views/admin/book/book_edit.php';
     }
